@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Data Representation – IGCSE Computer Science</title>
+<style>
+:root{--bg:#eef2f7;--card:#fff;--ink:#16202e;--mut:#5a6779;--line:#c7d0dc;--acc:#0f766e;--ok:#15803d;--okb:#dcfce7;--bad:#dc2626;--badb:#fee2e2;--ps:#f8fafc;--kw:#7c3aed;--str:#b45309;--hlb:#fde68a;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1520;--card:#18212f;--ink:#e8edf5;--mut:#9aa7bb;--line:#33405a;--acc:#14b8a6;--ok:#4ade80;--okb:#123524;--bad:#f87171;--badb:#3b1a1f;--ps:#111a27;--kw:#c4b5fd;--str:#fbbf24;--hlb:#5c4310;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Trebuchet MS",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1150px;margin:0 auto;padding:12px}
+h1{font-size:1.4rem;margin:0}.sub{color:var(--mut);font-size:.85rem}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:5px 12px;text-align:center;min-width:76px}
+.stat b{display:block;font-size:1.25rem}.stat span{font-size:.72rem;color:var(--mut)}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:700;font-size:.9rem;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.tabs{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+.tier{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tl{display:inline-block;min-width:96px;font-weight:700;font-size:.8rem;padding:4px 0}.tl.tLA{color:#16a34a}.tl.tMA{color:#d97706}.tl.tHA{color:#dc2626}
+.tab{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:700;font-size:.82rem;cursor:pointer}
+.tab.on{background:var(--acc);color:#fff;border-color:var(--acc)}.tab:disabled{opacity:.5;cursor:not-allowed}
+.tab.tLA{border-bottom:3px solid #16a34a}.tab.tMA{border-bottom:3px solid #d97706}.tab.tHA{border-bottom:3px solid #dc2626}
+.prog{height:12px;background:var(--line);border-radius:8px;overflow:hidden;margin:6px 0}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--ok));transition:width .45s}
+.lvl{margin:6px 0}.badge{display:inline-block;padding:1px 9px;border-radius:12px;background:var(--acc);color:#fff;font-weight:700;font-size:.78rem;margin-right:6px}
+.fb{min-height:50px;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);margin:8px 0}
+.fb.ok{background:var(--okb);border-color:var(--ok)}.fb.bad{background:var(--badb);border-color:var(--bad)}
+.main{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:10px}
+.card h2{font-size:.9rem;margin:0 0 6px}
+.pseudo{background:var(--ps);border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/2.1 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.pl{white-space:pre;border-radius:5px;padding:0 4px;transition:background .15s}.pl.hl{background:var(--hlb);outline:2px solid var(--acc)}
+.kw{color:var(--kw);font-weight:700}.qs{color:var(--str)}
+.code{background:#111827;color:#e5e7eb;border-radius:10px;padding:10px;font:14px/2.1 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto}
+.ln{white-space:pre}.no{color:#64748b;display:inline-block;width:2ch;margin-right:12px;text-align:right;font-weight:400}
+.gap{display:inline-block;border:2px dashed #38bdf8;border-radius:6px;padding:0 8px;color:#7dd3fc;cursor:pointer;line-height:1.6;white-space:pre;vertical-align:middle}
+.gap.full{min-width:min(100%,380px)}
+.gap.over{background:#164e63;border-style:solid}
+.gap.done{border:2px solid #4ade80;color:#86efac;background:transparent;cursor:default}
+.gap.shake{animation:sh .4s}.gap.pop{animation:pop .45s}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 10px;border-radius:8px;background:var(--acc);color:#fff;font:600 .78rem ui-monospace,Menlo,Consolas,monospace;white-space:pre;cursor:grab;touch-action:none;user-select:none;border:2px solid transparent}
+.chip.sel{border-color:var(--ink);transform:scale(1.05)}.chip.shake{animation:sh .4s}
+.ghost{position:fixed;z-index:99;pointer-events:none;opacity:.92;transform:translate(-50%,-50%) rotate(-3deg);box-shadow:0 6px 16px rgba(0,0,0,.3)}
+details{font-size:.85rem}summary{cursor:pointer;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px}td,th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left}
+td code{font:.78rem ui-monospace,Menlo,Consolas,monospace}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes pop{40%{transform:scale(1.1)}}
+.mc ul{text-align:left;margin:8px 0;padding-left:20px}.mc li{margin:3px 0}.lnk{background:none;border:0;color:var(--acc);font-weight:700;text-decoration:underline;cursor:pointer;font-size:.95rem}
+.avs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}.av{font-size:1.5rem;width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--card);cursor:pointer}.av.on{border-color:var(--acc);background:var(--okb);transform:scale(1.12)}
+.fact{font-size:.85rem;color:var(--mut)}.we{color:var(--bad);min-height:1.2em;margin:4px 0}.mc input,.mc select,.mc textarea{padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.95rem;margin:2px}
+.dash{text-align:left}.dash p{margin:6px 0}.tw{overflow-x:auto}.st{width:100%;border-collapse:collapse;font-size:.8rem;margin:8px 0;text-align:left}.st td,.st th{border-bottom:1px solid var(--line);padding:2px 6px}.st td:nth-child(n+3),.st th:nth-child(n+3){white-space:nowrap}.st th{font-size:.72rem;color:var(--mut)}
+.cert{border:6px double var(--acc);padding:14px;border-radius:8px}.cn{font-size:1.7rem;font-weight:700;margin:4px 0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;padding:16px}
+.mc{background:var(--card);border-radius:16px;padding:20px;max-width:520px;max-height:92vh;overflow:auto;text-align:center}
+.mc:has(.dash),.mc:has(.cert){max-width:780px}
+.mc h2{margin:0 0 8px}.mc p{margin:6px 0}
+.cf{position:fixed;top:-14px;width:9px;height:14px;z-index:120;pointer-events:none;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(108vh) rotate(540deg)}}
+@media (max-width:860px){.main{grid-template-columns:1fr}.bankc{position:sticky;bottom:0;max-height:36vh;overflow:auto;z-index:5}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media print{:root:root:root:root{--bg:#fff;--card:#fff;--ink:#16202e;--mut:#5a6779;--line:#c7d0dc}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}html,body{background:#fff!important}.wrap,.cf{display:none!important}.modal{position:static!important;background:none!important;display:block!important}.mc{max-height:none!important}.np{display:none}}
+.main.nops{grid-template-columns:1fr}.main.nops .lc{display:none}.main.nops .rc{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;align-items:start}
+.desc{margin:0 0 8px;padding:8px 10px;border-left:4px solid var(--acc);background:var(--bg);border-radius:6px;font-size:.92rem}.desc:empty{display:none}
+@media (max-width:860px){.main.nops .rc{grid-template-columns:1fr}}
+.ed{width:100%;box-sizing:border-box;background:transparent;color:#e5e7eb;border:2px dashed #38bdf8;border-radius:8px;padding:6px 8px;font:14px/1.9 ui-monospace,Menlo,Consolas,monospace;resize:vertical;tab-size:4;white-space:pre;overflow-x:auto}
+.ed:focus{outline:none;border-style:solid}.ed::placeholder{color:#64748b}
+.wres{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.wres span{font:700 .78rem ui-monospace,Menlo,Consolas,monospace;padding:2px 7px;border-radius:6px;border:1px solid var(--line)}.wres .good{background:var(--okb);border-color:var(--ok)}.wres .wrongl{background:var(--badb);border-color:var(--bad)}
+.ty{display:inline-block;padding:1px 9px;border-radius:12px;border:1px solid var(--acc);color:var(--acc);font-weight:700;font-size:.78rem;margin-right:6px}
+.tin{font:inherit;line-height:1.5;background:#0b1220;color:#f1f5f9;border:2px dashed #38bdf8;border-radius:6px;padding:0 6px;vertical-align:middle;min-width:6ch}
+.tin:focus{outline:none;border-style:solid;background:#164e63}
+.tin.shake{animation:sh .4s}
+.tok{background:#0f766e;color:#fff;border:0;border-radius:6px;padding:0 8px;margin-left:4px;font:700 .8rem system-ui,sans-serif;line-height:1.9;cursor:pointer;vertical-align:middle}
+.qbox{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;background:var(--card)}
+.qbox.done{border-color:var(--ok);background:var(--okb)}
+.qbox p{margin:0 0 6px;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:6px 12px;font:600 .85rem ui-monospace,Menlo,Consolas,monospace;cursor:pointer;white-space:pre}
+.opt.right{background:var(--ok);color:#fff;border-color:var(--ok)}.opt.shake{animation:sh .4s}.opt:disabled{cursor:default}
+.bl{cursor:pointer;border-radius:4px;padding:0 4px}.bl:hover{background:#1f2937}.bl.pick{outline:2px solid #fbbf24;background:#3b2f0b}.bl.fixed{color:#86efac;cursor:default}.bl.shake{animation:sh .4s}
+.ord{display:flex;align-items:center;gap:4px;background:#1f2937;border-radius:6px;margin:3px 0;padding:2px 4px;line-height:1.7}
+.ord .otx{white-space:pre;flex:1;overflow-x:auto}.ord.good{outline:2px solid #4ade80}.ord.wrongl{outline:2px solid #f87171}
+.ob{background:#374151;color:#fff;border:0;border-radius:5px;min-width:30px;height:28px;cursor:pointer;font:700 .85rem system-ui,sans-serif}
+.ob:disabled{opacity:.35;cursor:default}
+
+.main{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.qn{font-size:.8rem;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.qt{font-size:1.05rem;margin-bottom:10px}
+.big{display:inline-block;font:700 1.6rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;margin:6px 0;color:var(--acc)}
+table.pv{width:auto;border-collapse:separate;border-spacing:4px;margin:8px 0;font:600 .9rem ui-monospace,Menlo,Consolas,monospace}
+table.pv th{border:0;color:var(--mut);font-size:.78rem;text-align:center;padding:0 2px;min-width:2.6em}
+table.pv td{border:1px solid var(--line);border-radius:6px;text-align:center;padding:4px 0;background:var(--card)}
+table.pv td.one{background:var(--okb);border-color:var(--ok)}
+table.pv.inp td{border:0;padding:0;background:none}
+.bit{width:2.6em;height:2.6em;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:700 1.15rem ui-monospace,Menlo,Consolas,monospace;cursor:pointer}
+.bit.one{background:var(--acc);color:#fff;border-color:var(--acc)}.bit:focus-visible{outline:3px solid #fbbf24}
+.bitsbox.shake,.ansin.shake{animation:sh .4s}
+.ansin{font:700 1.2rem ui-monospace,Menlo,Consolas,monospace;padding:8px 10px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:12em;max-width:100%}
+.ansin:focus{outline:none;border-color:var(--acc)}.ansin.wide{width:24em}
+pre.sum{font:600 .95rem/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow-x:auto;margin:8px 0;white-space:pre}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:9px 14px;font:600 .95rem system-ui,sans-serif;cursor:pointer}.opt:hover{border-color:var(--acc)}.opt.shake{animation:sh .4s}
+#help p,#work p{margin:6px 0}#help code{font:600 .9rem ui-monospace,Menlo,Consolas,monospace}
+#work ul{margin:4px 0;padding-left:20px}.wq{font-weight:700}
+#work code,.qt code{font:600 .92rem ui-monospace,Menlo,Consolas,monospace;background:var(--bg);padding:0 4px;border-radius:4px}
+</style></head>
+<body><div class="wrap">
+<div class="top"><div><h1>Data Representation</h1><div class="sub">IGCSE Computer Science 4CP0: binary, hexadecimal, binary arithmetic, signed numbers, shifts and units</div><div class="sub" id="who"></div></div>
+<div class="stats"><div class="stat"><b id="sc">0</b><span>Score</span></div><div class="stat"><b id="sk">0</b><span>Streak</span></div><div class="stat"><b id="ms">0</b><span>Mistakes</span></div><div class="stat"><b id="tm">0m 00s</b><span>Level time</span></div><button class="btn alt" id="rs">Reset level</button><button class="btn alt" onclick="summary()">Progress report</button><button class="btn alt" onclick="saveDlg()">Save progress</button><button class="btn alt" onclick="welcome()">Player</button><button class="btn alt" onclick="rules(false)">Rules</button></div></div>
+<div class="tabs" id="tabs"></div>
+<div class="prog"><i id="pb"></i></div>
+<div class="lvl"><span class="badge" id="bd"></span><b id="lt"></b> <small id="pt" style="color:var(--mut)"></small></div>
+<div class="fb" id="fb"></div>
+<div class="main">
+<div class="card"><h2>Question</h2><div id="q"></div></div>
+<div><div class="card"><h2>Method</h2><div id="help"></div></div>
+<div class="card"><h2>Worked solution</h2><div id="work"></div></div></div>
+</div></div><div class="modal" id="m"></div>
+<script>
+// ================= HELPERS =================
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[Math.floor(Math.random()*a.length)];
+const B=(n,w=8)=>((n%2**w+2**w)%2**w).toString(2).padStart(w,'0');   // n as w-bit pattern (negative n gives two's complement)
+const HX=(n,d=2)=>n.toString(16).toUpperCase().padStart(d,'0');
+const nib=s=>s.replace(/(.{4})(?=.)/g,'$1 ');                         // 10110011 -> 1011 0011
+const val=s=>parseInt(s,2);                                           // unsigned value
+const sval=s=>{const u=parseInt(s,2);return s[0]=='1'?u-2**s.length:u}; // two's complement value
+const smval=s=>(s[0]=='1'?-1:1)*parseInt(s.slice(1),2);               // sign and magnitude value
+const PV=w=>Array.from({length:w},(_,i)=>2**(w-1-i));
+const HEAD={u:PV(8),tc:[-128,64,32,16,8,4,2,1],sm:['Sign',64,32,16,8,4,2,1]};
+const flip=s=>[...s].map(b=>b=='1'?'0':'1').join('');
+const fmtN=n=>n.toLocaleString('en-GB');
+const table=(bits,head=HEAD.u)=>`<table class="pv"><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr><tr>${[...bits].map(b=>`<td class="${b=='1'?'one':''}">${b}</td>`).join('')}</tr></table>`;
+const ones=(bits,head=HEAD.u)=>head.filter((p,i)=>bits[i]=='1');
+// a question: html prompt, mode (num | hex | bits | choice), ans, hint(answer) and work (worked solution)
+const Q=(html,ans,work,hint,extra={})=>Object.assign({html,mode:'num',ans:String(ans),work,hint:hint||(()=>'')},extra);
+const BQ=(html,bits,work,hint,extra={})=>Object.assign({html,mode:'bits',w:bits.length,head:HEAD.u,ans:bits,work,hint:hint||(()=>'')},extra);
+const CQ=(html,ans,opts,work,hint)=>({html,mode:'choice',ans,opts,work,hint:hint||(()=>'')});
+const big=s=>`<b class="big">${s}</b>`;
+// ================= WORKED SOLUTIONS =================
+function wBtoD(b){const o=ones(b);return `${table(b)}<p>Add the place values that have a 1: ${o.length?o.join(' + '):'0'} = <b>${val(b)}</b></p>`}
+function wDtoB(n){let r=n;const st=[];for(const p of PV(8)){if(r>=p){st.push(`${r} − ${p} = ${r-p}, so put 1 in the ${p} column`);r-=p}}
+ return `<p>Start at 128. Take away each place value that fits:</p><ul>${st.map(x=>`<li>${x}</li>`).join('')}</ul>${table(B(n))}<p>So ${n} = <b>${nib(B(n))}</b></p>`}
+function wBtoH(b){const a=b.slice(0,4),c=b.slice(4);return `<p>Split into two nibbles and convert each one using 8 4 2 1:</p><p><code>${a}</code> = ${val(a)} = <b>${HX(val(a),1)}</b> &nbsp;&nbsp; <code>${c}</code> = ${val(c)} = <b>${HX(val(c),1)}</b></p><p>So ${nib(b)} = <b>${HX(val(b))}</b></p>`}
+function wHtoB(h){return `<p>Change each hex digit into 4 bits (8 4 2 1):</p><p><b>${h[0]}</b> = ${parseInt(h[0],16)} = <code>${B(parseInt(h[0],16),4)}</code> &nbsp;&nbsp; <b>${h[1]}</b> = ${parseInt(h[1],16)} = <code>${B(parseInt(h[1],16),4)}</code></p><p>So ${h} = <b>${nib(B(parseInt(h,16)))}</b></p>`}
+function wDtoH(n){const q=n>>4,r=n&15;return `<p>${n} ÷ 16 = ${q} remainder ${r}</p><p>${q} → <b>${HX(q,1)}</b> (first digit), ${r} → <b>${HX(r,1)}</b> (second digit)</p><p>So ${n} = <b>${HX(n)}</b>. Check: ${q} × 16 + ${r} = ${n}</p>`}
+function wHtoD(h){const a=parseInt(h[0],16),b=parseInt(h[1],16);return `<p>The first digit is worth 16s, the second is worth 1s.</p><p>${h[0]} = ${a}, ${h[1]} = ${b}</p><p>${a} × 16 + ${b} = <b>${a*16+b}</b></p>`}
+function cols(rows,labels){return `<pre class="sum">${rows.map((r,i)=>`${(labels[i]||'').padStart(7)}  ${[...r].join(' ')}`).join('\n')}</pre>`}
+function carries(a,b){let c=0;const car=Array(a.length).fill(' ');let out=0;for(let i=a.length-1;i>=0;i--){const s=+a[i]+ +b[i]+c;c=s>1?1:0;if(c){if(i>0)car[i-1]='1';else out=1}}return {car:car.join(''),out}}
+function wAdd(a,b,note='',signed=false){const {car,out}=carries(a,b),s=val(a)+val(b),r=B(s),v=signed?sval:val;
+ if(signed)return cols([car,a,b,'-'.repeat(8),r],['carry',`(${v(a)})`,`+ (${v(b)})`,'',`(${sval(r)})`])+`<p>Work from the right with carries.${out?' The carry out of the left bit is ignored.':''}</p>${note}`;
+ return cols([car,a,b,'-'.repeat(8),r],['carry',`(${val(a)})`,`+ (${val(b)})`,'',`(${s&255})`])+
+  `<p>Work from the right: 1 + 1 = 10 (write 0, carry 1), 1 + 1 + 1 = 11 (write 1, carry 1).</p>${out?`<p>There is a carry out of the 8th bit. ${val(a)} + ${val(b)} = ${s}, which is more than 255, so the carry is lost: <b>overflow error</b>. The stored result is <b>${nib(r)}</b>.</p>`:`<p>${val(a)} + ${val(b)} = ${s} = <b>${nib(r)}</b></p>`}${note}`}
+function wSub(a,b){const d=val(a)-val(b);return cols([a,b,'-'.repeat(8),B(d)],[`(${val(a)})`,`− (${val(b)})`,'',`(${d})`])+`<p>Work from the right: 1 − 0 = 1, 1 − 1 = 0, 0 − 0 = 0. For 0 − 1, borrow from the next column to the left: 10 − 1 = 1.</p><p>Check in denary: ${val(a)} − ${val(b)} = ${d} = <b>${nib(B(d))}</b></p>`}
+function wMul(a,b){const rows=[],lab=[];[...B(b,8)].reverse().forEach((bit,j)=>{if(bit=='1'){rows.push(B(a<<j));lab.push(`(${a}×${2**j})`)}});
+ return `<p>For each 1 in <code>${B(b,3)}</code>, write <code>${B(a,4)}</code> shifted left by that column, then add the rows:</p>`+cols(rows.concat(['-'.repeat(8),B(a*b)]),lab.concat(['',`(${a*b})`]))+`<p>${a} × ${b} = ${a*b} = <b>${nib(B(a*b))}</b></p>`}
+function wShift(b,k,dir,kind){const sg=kind=='asr'||kind=='asl',v=sg?sval(b):val(b);let r;
+ if(dir=='L')r=(b+'0'.repeat(k)).slice(k);else r=(kind=='asr'?b[0].repeat(k):'0'.repeat(k))+b.slice(0,8-k);
+ const lost=dir=='L'?b.slice(0,k):b.slice(8-k),rv=sg?sval(r):val(r);
+ return `<pre class="sum">  before  ${[...b].join(' ')}   (${v})\n  after   ${[...r].join(' ')}   (${rv})</pre><p>Every bit moves ${k} place${k>1?'s':''} ${dir=='L'?'left':'right'}. ${dir=='L'?`0s fill the gap on the right${kind=='asl'?' (an arithmetic shift left works like a logical shift left)':''}.`:kind=='asr'?`The sign bit (${b[0]}) is copied into the gap on the left, so the number keeps its sign.`:'0s fill the gap on the left.'} The bit${k>1?'s':''} <code>${lost}</code> fall${k>1?'':'s'} off the ${dir=='L'?'left':'right'} and ${k>1?'are':'is'} lost.</p><p>${dir=='L'?`Shifting left ${k} place${k>1?'s':''} multiplies by ${2**k}`:`Shifting right ${k} place${k>1?'s':''} divides by ${2**k} (rounding down)`}${dir=='L'&&rv!=v*2**k?`, but ${v} × ${2**k} = ${v*2**k} does not fit${sg?' (the sign bit changed)':''}, so the result is wrong: overflow.`:'.'}</p>`}
+function shiftRes(b,k,dir,kind){return dir=='L'?(b+'0'.repeat(k)).slice(k):(kind=='asr'?b[0].repeat(k):'0'.repeat(k))+b.slice(0,8-k)}
+function wTC(n){if(n>=0)return `<p>${n} is positive, so it is written the normal way with a 0 at the left: <b>${nib(B(n))}</b></p>${table(B(n),HEAD.tc)}`;
+ if(n==-128)return `<p>−128 is just the −128 column: <b>1000 0000</b></p>`;
+ const p=B(-n);return `<p>1. Write +${-n} in binary: <code>${nib(p)}</code></p><p>2. Flip every bit: <code>${nib(flip(p))}</code></p><p>3. Add 1: <code>${nib(B(n))}</code></p>${table(B(n),HEAD.tc)}<p>Check: ${ones(B(n),HEAD.tc).join(' + ')} = ${n}</p>`}
+function wTCtoD(b){const o=ones(b,HEAD.tc);return `${table(b,HEAD.tc)}<p>In two's complement the left bit is worth −128. Add the place values that have a 1: ${o.join(' + ').replace(/\+ -/g,'− ')} = <b>${sval(b)}</b></p>`}
+function wSM(n){const b=(n<0?'1':'0')+B(Math.abs(n),7);return `<p>The sign bit is ${n<0?'1 (negative)':'0 (positive)'}. The other 7 bits hold ${Math.abs(n)}: <code>${B(Math.abs(n),7)}</code></p>${table(b,HEAD.sm)}<p>So ${n} = <b>${nib(b)}</b></p>`}
+function wSMtoD(b){return `${table(b,HEAD.sm)}<p>Sign bit ${b[0]} means ${b[0]=='1'?'negative':'positive'}. The other 7 bits are worth ${ones('0'+b.slice(1)).join(' + ')||'0'} = ${val(b.slice(1))}.</p><p>So the number is <b>${smval(b)}</b></p>`}
+// ================= HINTS =================
+function bitsHint(got,want,kind='u'){const name=kind=='tc'?"in two's complement":kind=='sm'?'in sign and magnitude':'';return `Your bits are worth ${got}${name?' '+name:''}, but the answer should be ${want}. ${got>want?'Your answer is too big.':'Your answer is too small.'}`}
+function unitHint(v,x,f,ans,from,to){v=+v;const g=f==1024?1000:1024,mult=ans>x,near=(p,q)=>Math.abs(p-q)<1e-6;
+ if(near(v,mult?x*g:x/g))return `${f==1024?'Binary units (KiB, MiB, GiB) go up in 1024s, not 1000s.':'Decimal units (KB, MB, GB, TB) go up in 1000s, not 1024s.'}`;
+ if(near(v,mult?x/f:x*f))return `You are going from ${from} to ${to}. ${mult?'A smaller unit means a bigger number, so multiply.':'A bigger unit means a smaller number, so divide.'}`;
+ return `Each step between these units is × ${fmtN(f)}. ${mult?'Multiply':'Divide'} by ${fmtN(f)}.`}
+// ================= LEVELS =================
+// each level: lv (tier), t (title), help (method shown beside the questions), n (questions), kinds (question makers; one is picked for each question)
+const T=[
+// ---------------- Beginner ----------------
+{lv:'LA',t:'Binary to denary',help:'<p>Write the place values above the bits:</p><p><code>128 64 32 16 8 4 2 1</code></p><p>Add up the place values that have a 1 under them.</p>',n:5,kinds:[()=>{const n=R(1,255),b=B(n);
+ return Q(`Convert this binary number to denary.<br>${big(nib(b))}${table(b)}`,n,wBtoD(b),v=>{const rv=val([...b].reverse().join(''));if(+v==rv&&rv!=n)return 'You read the bits from the wrong end. The bit on the right is worth 1 and the bit on the left is worth 128.';return `Add up the place values that have a 1 under them. ${+v>n?'Your answer is too big.':'Your answer is too small.'}`})}]},
+{lv:'LA',t:'Denary to binary',help:'<p>Start with the 128 column. If the number is at least the place value, put a 1 and take the place value away. If not, put a 0.</p><p>Do the same for 64, 32, 16, 8, 4, 2 and 1.</p>',n:5,kinds:[()=>{const n=R(1,255);
+ return BQ(`Convert ${big(n)} to 8-bit binary. Click the bits to switch them between 0 and 1.`,B(n),wDtoB(n),v=>bitsHint(val(v),n),{live:true})}]},
+{lv:'LA',t:'Binary to hexadecimal',help:'<p>Split the byte into two nibbles (groups of 4 bits).</p><p>Convert each nibble with <code>8 4 2 1</code> and write it as one hex digit.</p><p>10 = A, 11 = B, 12 = C, 13 = D, 14 = E, 15 = F</p>',n:5,kinds:[()=>{const n=R(16,255),b=B(n);
+ return Q(`Convert this binary number to hexadecimal.<br>${big(nib(b))}`,HX(n),wBtoH(b),v=>{if(/^\d+$/.test(v)&&+v==n)return 'That is the denary value. Convert each nibble (4 bits) into one hex digit instead.';if(v.length==2&&v[1]+v[0]==HX(n))return 'Right digits, wrong order. The left nibble gives the left hex digit.';if(/1[0-5]/.test(v))return 'A hex digit is a single character. 10 to 15 are written A to F.';return 'Split the byte into two nibbles. Find the value of each nibble with 8 4 2 1 and write it as one hex digit.'},{mode:'hex'})}]},
+{lv:'LA',t:'Hexadecimal to binary',help:'<p>Change each hex digit into 4 bits using <code>8 4 2 1</code>.</p><p>A = 10, B = 11, C = 12, D = 13, E = 14, F = 15</p><p>Put the two nibbles together, first digit on the left.</p>',n:5,kinds:[()=>{const n=R(16,255),h=HX(n);
+ return BQ(`Convert the hexadecimal number ${big(h)} to 8-bit binary.`,B(n),wHtoB(h),v=>{const t=B(n);if(v.slice(4)+v.slice(0,4)==t)return 'Right nibbles, wrong order. The first hex digit becomes the left 4 bits.';if(v.slice(0,4)==t.slice(0,4))return `The left nibble is right. Now change ${h[1]} into 4 bits for the right nibble.`;if(v.slice(4)==t.slice(4))return `The right nibble is right. Now change ${h[0]} into 4 bits for the left nibble.`;return 'Change each hex digit into 4 bits using 8 4 2 1. Remember A = 10 up to F = 15.'})}]},
+{lv:'LA',t:'Bits, nibbles and bytes',help:'<p>1 nibble = 4 bits<br>1 byte = 8 bits = 2 nibbles</p><p>n bits can store 2<sup>n</sup> different values.</p><p>1 KB (kilobyte) = 1000 bytes<br>1 KiB (kibibyte) = 1024 bytes</p>',n:5,kinds:[
+ ()=>{const n=R(2,16);return Q(`How many bits are there in ${n} bytes?`,n*8,`<p>1 byte = 8 bits, so ${n} × 8 = <b>${n*8}</b> bits.</p>`,v=>+v==n*4?'4 bits is a nibble. A byte is 8 bits.':+v==n/8?'Going from bytes to bits (a smaller unit) means multiplying by 8.':'1 byte = 8 bits. Multiply by 8.')},
+ ()=>{const n=R(2,16)*8;return Q(`How many bytes are there in ${n} bits?`,n/8,`<p>8 bits = 1 byte, so ${n} ÷ 8 = <b>${n/8}</b> bytes.</p>`,v=>+v==n*8?'Going from bits to bytes (a bigger unit) means dividing by 8.':+v==n/4?'That is the number of nibbles. A byte is 8 bits.':'8 bits make 1 byte. Divide by 8.')},
+ ()=>{const n=R(2,12);return Q(`How many nibbles are there in ${n} bytes?`,n*2,`<p>A nibble is 4 bits and a byte is 8 bits, so 1 byte = 2 nibbles. ${n} × 2 = <b>${n*2}</b>.</p>`,v=>+v==n*8?'That is the number of bits. A nibble is 4 bits, so a byte holds 2 nibbles.':'1 byte = 2 nibbles.')},
+ ()=>{const n=R(2,8);return Q(`How many different values can be stored using ${n} bits?`,2**n,`<p>Each extra bit doubles the number of values: 2<sup>${n}</sup> = <b>${2**n}</b>.</p>`,v=>+v==n*2?`Not ${n} × 2. It is 2 to the power ${n}: multiply 2 by itself ${n} times.`:+v==2**n-1?`${2**n-1} is the largest value. Counting 0 as well, there are ${2**n} values.`:'The number of values is 2 to the power of the number of bits.')},
+ ()=>{const c=pick([['kibibyte (KiB)',1024],['kilobyte (KB)',1000]]);return Q(`How many bytes are there in 1 ${c[0]}?`,c[1],`<p>1 KB (kilobyte) = 1000 bytes. 1 KiB (kibibyte) = 1024 bytes.</p>`,v=>+v==1024||+v==1000?'Kilo (KB) means 1000. Kibi (KiB) means 1024.':'Kilo means 1000. Kibi means 2<sup>10</sup>, which is 1024.')}]},
+{lv:'LA',t:'Binary addition',help:'<p>Work from right to left.</p><p><code>0 + 0 = 0</code><br><code>0 + 1 = 1</code><br><code>1 + 1 = 10</code> write 0, carry 1<br><code>1 + 1 + 1 = 11</code> write 1, carry 1</p>',n:5,kinds:[()=>{const a=R(10,127),b=R(10,Math.min(127,255-a)),x=B(a),y=B(b);
+ return BQ(`Add these two 8-bit binary numbers.${cols([x,y],['','+'])}`,B(a+b),wAdd(x,y),v=>{if(val(v)==(a^b))return 'Remember to carry. 1 + 1 = 10: write 0 and carry 1 into the next column.';return `Check each column from the right and remember the carries. Your answer is worth ${val(v)}, but ${a} + ${b} = ${a+b}.`})}]},
+{lv:'LA',t:'Logical shift left',help:'<p>Every bit moves left. 0s fill the gap on the right.</p><p>Bits that move off the left end are lost.</p><p>Each place left multiplies the number by 2.</p>',n:5,kinds:[()=>{const k=R(1,2),n=R(1,2**(8-k)-1),b=B(n);
+ return BQ(`Do a <b>logical shift left by ${k} place${k>1?'s':''}</b> on this number.<br>${big(nib(b))}`,shiftRes(b,k,'L'),wShift(b,k,'L'),v=>v==shiftRes(b,k,'R')?'That is a shift right. Left means the bits move towards the 128 end.':v==shiftRes(b,k==1?2:1,'L')?`Shift ${k} place${k>1?'s':''}, not ${k==1?2:1}.`:`Move every bit ${k} place${k>1?'s':''} to the left and fill the right with 0s.`)}]},
+// ---------------- Intermediate ----------------
+{lv:'MA',t:'Denary to hexadecimal',help:'<p>Divide the number by 16.</p><p>The answer is the first hex digit. The remainder is the second hex digit.</p><p>10 to 15 are written A to F.</p><p>Or: convert to binary, then each nibble to hex.</p>',n:5,kinds:[()=>{const n=R(26,255);
+ return Q(`Convert ${big(n)} to hexadecimal.`,HX(n),wDtoH(n),v=>{if(v==B(n))return 'That is the binary. Now turn each nibble into one hex digit.';if(/1[0-5]/.test(v)&&v.length>2)return 'Each hex digit is a single character. Use A to F for 10 to 15.';if(v.length==2&&v[1]+v[0]==HX(n))return 'Right digits, wrong order. The first digit is how many 16s.';return `${n} ÷ 16 gives the first digit; the remainder is the second digit.`},{mode:'hex'})}]},
+{lv:'MA',t:'Hexadecimal to denary',help:'<p>The first hex digit is worth 16s and the second is worth 1s.</p><p>Multiply the first digit by 16 and add the second.</p><p>A = 10, B = 11, C = 12, D = 13, E = 14, F = 15</p>',n:5,kinds:[()=>{const n=R(26,255),h=HX(n),a=parseInt(h[0],16),b=parseInt(h[1],16);
+ return Q(`Convert the hexadecimal number ${big(h)} to denary.`,n,wHtoD(h),v=>+v==a*10+b?'The first digit is worth 16s, not 10s. Multiply it by 16.':+v==a+b?'Multiply the first digit by 16 before adding the second.':+v==b*16+a?'The left digit is the 16s digit.':'Multiply the first digit by 16 and add the second digit. A = 10, B = 11 … F = 15.')}]},
+{lv:'MA',t:'Binary addition and overflow',help:'<p>An 8-bit register can hold 0 to 255.</p><p>If the answer needs a 9th bit, that carry is lost. This is an <b>overflow error</b>, and the stored result is wrong.</p>',n:5,kinds:[
+ ()=>{const a=R(130,250),b=R(256-a,255),x=B(a),y=B(b);return BQ(`Add these 8-bit numbers. Give the 8 bits that are stored (a 9th bit cannot be stored).${cols([x,y],['','+'])}`,B(a+b),wAdd(x,y),v=>v==B(a+b,9).slice(0,8)?'Keep the right-hand 8 bits. The carry out of the left column is the one that is lost.':'Add each column from the right with carries. Only the right-hand 8 bits are stored.')},
+ ()=>{const a=R(20,200),b=R(20,Math.min(235,255-a)),x=B(a),y=B(b);return BQ(`Add these 8-bit numbers.${cols([x,y],['','+'])}`,B(a+b),wAdd(x,y),v=>val(v)==(a^b)?'Remember to carry: 1 + 1 = 10, 1 + 1 + 1 = 11.':'Work from the right and keep track of the carries.')},
+ ()=>{const o=Math.random()<.5,a=o?R(130,250):R(20,200),b=o?R(256-a,255):R(10,255-a),x=B(a),y=B(b);return CQ(`Does adding these two 8-bit numbers cause an overflow error?${cols([x,y],['','+'])}`,o?'Yes':'No',['Yes','No'],`<p>${a} + ${b} = ${a+b}. ${o?'That is more than 255, so it needs a 9th bit: <b>overflow</b>.':'That is 255 or less, so it fits in 8 bits: <b>no overflow</b>.'}</p>`,()=>'Overflow happens when the result is bigger than 255, so a carry goes out of the left-hand column.')}]},
+{lv:'MA',t:'Binary subtraction',help:'<p>Work from right to left.</p><p><code>0 − 0 = 0</code><br><code>1 − 0 = 1</code><br><code>1 − 1 = 0</code><br><code>0 − 1</code>: borrow 1 from the next column on the left, then 10 − 1 = 1</p>',n:5,kinds:[()=>{const a=R(60,255),b=R(5,a-5),x=B(a),y=B(b);
+ return BQ(`Subtract the second 8-bit number from the first.${cols([x,y],['','−'])}`,B(a-b),wSub(x,y),v=>val(v)==(a^b)?'Remember to borrow. For 0 − 1, borrow from the next column to the left.':val(v)==a+b?'That is the sum. This question is a subtraction.':`Your answer is worth ${val(v)}, but ${a} − ${b} = ${a-b}. Check your borrows.`)}]},
+{lv:'MA',t:'Units: KB, MB, GB, TB and KiB, MiB, GiB',help:'<p><b>Decimal</b> units go up in 1000s:<br>1 KB = 1000 bytes, 1 MB = 1000 KB, 1 GB = 1000 MB, 1 TB = 1000 GB</p><p><b>Binary</b> units go up in 1024s:<br>1 KiB = 1024 bytes, 1 MiB = 1024 KiB, 1 GiB = 1024 MiB</p><p>To a smaller unit, multiply. To a bigger unit, divide.</p>',n:5,kinds:[
+ ...[['KB','bytes',1000],['KiB','bytes',1024],['MB','KB',1000],['MiB','KiB',1024],['GB','MB',1000],['GiB','MiB',1024],['TB','GB',1000]].map(([f,t,m])=>()=>{const x=R(2,9),a=x*m;return Q(`How many ${t} are there in ${x} ${f}?`,a,`<p>1 ${f} = ${fmtN(m)} ${t}, so ${x} × ${fmtN(m)} = <b>${fmtN(a)}</b> ${t}.</p>`,v=>unitHint(v,x,m,a,f,t))}),
+ ...[['bytes','KB',1000],['KiB','MiB',1024],['MB','GB',1000]].map(([f,t,m])=>()=>{const y=R(2,9),x=y*m;return Q(`How many ${t} are there in ${fmtN(x)} ${f}?`,y,`<p>1 ${t} = ${fmtN(m)} ${f}, so ${fmtN(x)} ÷ ${fmtN(m)} = <b>${y}</b> ${t}.</p>`,v=>unitHint(v,x,m,y,f,t))})]},
+{lv:'MA',t:'Logical shift right',help:'<p>Every bit moves right. 0s fill the gap on the left.</p><p>Bits that move off the right end are lost.</p><p>Each place right divides the number by 2, rounding down.</p>',n:5,kinds:[
+ ()=>{const k=R(1,3),b=B(R(20,255));return BQ(`Do a <b>logical shift right by ${k} place${k>1?'s':''}</b> on this number.<br>${big(nib(b))}`,shiftRes(b,k,'R'),wShift(b,k,'R'),v=>v==shiftRes(b,k,'L')?'That is a shift left. Right means the bits move towards the 1 end.':v==b[0].repeat(k)+b.slice(0,8-k)&&b[0]=='1'?'In a logical shift, 0s always fill the gap on the left.':`Move every bit ${k} place${k>1?'s':''} right and fill the left with 0s.`)},
+ ()=>{const n=R(20,254),b=B(n);return Q(`${big(nib(b))} is ${n} in denary. What is its denary value after a logical shift right by 1 place?`,n>>1,wShift(b,1,'R'),v=>+v==n*2?'Shifting right divides by 2. Shifting left multiplies.':+v==n/2?'The bit that falls off the right is lost, so round down.':'A logical shift right by 1 divides by 2, rounding down.')},
+ ()=>{const k=R(1,3);return CQ(`A logical shift <b>right</b> by ${k} place${k>1?'s':''} has the same effect as …`,`dividing by ${2**k}`,[`dividing by ${2**k}`,`multiplying by ${2**k}`,`dividing by ${k*2==2**k?k+3:k*2}`,`subtracting ${k}`],`<p>Each place right halves the number, so ${k} place${k>1?'s':''} divides by 2<sup>${k}</sup> = ${2**k} (rounding down).</p>`,()=>'Each place right halves the number.')}]},
+{lv:'MA',t:'Sign and magnitude',help:'<p>The left bit is the <b>sign</b>: 0 means positive, 1 means negative.</p><p>The other 7 bits are the size (magnitude), using <code>64 32 16 8 4 2 1</code>.</p><p>8 bits can store −127 to +127.</p>',n:5,kinds:[
+ ()=>{const n=R(5,127)*(Math.random()<.75?-1:1),b=(n<0?'1':'0')+B(Math.abs(n),7);return BQ(`Write ${big(n)} as an 8-bit <b>sign and magnitude</b> number.`,b,wSM(n),v=>v.slice(1)==b.slice(1)?`The magnitude is right. Check the sign bit: ${n<0?'1 for negative':'0 for positive'}.`:v==B(n)?"That is two's complement. In sign and magnitude, just set the sign bit and write the size in the other 7 bits.":bitsHint(smval(v),n,'sm'),{head:HEAD.sm})},
+ ()=>{const n=R(5,127)*(Math.random()<.75?-1:1),b=(n<0?'1':'0')+B(Math.abs(n),7);return Q(`This is an 8-bit <b>sign and magnitude</b> number. What is it in denary?<br>${big(nib(b))}`,n,wSMtoD(b),v=>+v==-n?'Check the sign bit: 1 means negative, 0 means positive.':+v==val(b)?'The left bit is the sign, not 128. Use only the other 7 bits for the size.':'Read the left bit as the sign, then add up 64 32 16 8 4 2 1 for the size.')}]},
+// ---------------- Expert ----------------
+{lv:'HA',t:"Two's complement: denary to binary",help:"<p>In two's complement the left bit is worth <b>−128</b>.</p><p>For a negative number:<br>1. Write the positive number in binary.<br>2. Flip every bit.<br>3. Add 1.</p><p>8 bits can store −128 to +127.</p>",n:10,kinds:[
+ ...Array(4).fill(()=>{const n=-R(2,127);return BQ(`Write ${big(n)} as an 8-bit <b>two's complement</b> number.`,B(n),wTC(n),v=>{if(v==B(-n))return `That is +${-n}. Negative numbers in two's complement start with 1. Flip the bits and add 1.`;if(v==flip(B(-n)))return 'You flipped the bits. Now add 1.';if(v=='1'+B(-n,7))return "That is sign and magnitude. For two's complement, flip all the bits of +"+(-n)+' and add 1.';return bitsHint(sval(v),n,'tc')},{head:HEAD.tc})}),
+ ()=>{const n=R(2,127);return BQ(`Write ${big('+'+n)} as an 8-bit <b>two's complement</b> number.`,B(n),wTC(n),v=>v==B(-n)?'That is −'+n+'. A positive number is written the normal way, with 0 on the left.':bitsHint(sval(v),n,'tc'),{head:HEAD.tc})}]},
+{lv:'HA',t:"Two's complement: binary to denary",help:'<p>Use these place values:</p><p><code>−128 64 32 16 8 4 2 1</code></p><p>Add the place values that have a 1. If the left bit is 1, the answer is negative.</p>',n:10,kinds:[
+ ...Array(4).fill(()=>{const n=-R(2,128),b=B(n);return Q(`This is an 8-bit <b>two's complement</b> number. What is it in denary?<br>${big(nib(b))}`,n,wTCtoD(b),v=>+v==val(b)?'The left bit is worth −128, not +128.':+v==smval(b)?'That is how sign and magnitude works. In two\'s complement the left bit is worth −128: add −128 to the rest.':+v==-n?'The answer is negative because the left bit is 1.':'Add the place values with a 1, using −128 for the left bit.')}),
+ ()=>{const n=R(2,127),b=B(n);return Q(`This is an 8-bit <b>two's complement</b> number. What is it in denary?<br>${big(nib(b))}`,n,wTCtoD(b),v=>+v==-n?'The left bit is 0, so the number is positive.':'Add the place values with a 1.')}]},
+{lv:'HA',t:'Binary multiplication',help:'<p>For each 1 in the second number, write the first number shifted left by that column. Add the rows.</p><p>Multiplying by 2, 4 or 8 is the same as a logical shift left by 1, 2 or 3 places.</p>',n:10,kinds:[
+ ...Array(4).fill(()=>{const a=R(5,15),b=R(3,7);return BQ(`Multiply these binary numbers. Give the answer as 8 bits.<br>${big(B(a,4)+' × '+B(b,3))}`,B(a*b),wMul(a,b),v=>val(v)==a+b?'That is the sum. This question is a multiplication.':`Your answer is worth ${val(v)}, but ${a} × ${b} = ${a*b}. Write a shifted copy of ${B(a,4)} for each 1 in ${B(b,3)}, then add.`)}),
+ ()=>{const k=R(1,3);return Q(`Multiplying an unsigned binary number by ${2**k} is the same as a logical shift left by how many places?`,k,`<p>Each place left multiplies by 2, and 2<sup>${k}</sup> = ${2**k}, so shift left <b>${k}</b> place${k>1?'s':''}.</p>`,v=>+v==2**k?`Each place multiplies by 2, so ${2**k} is ${k} doubling${k>1?'s':''}.`:'Count how many times you double 1 to reach '+2**k+'.')}]},
+{lv:'HA',t:"Two's complement arithmetic",help:"<p>Change both numbers to two's complement, then add them in binary.</p><p>To work out A − B, add A and −B.</p><p>Ignore any carry out of the left bit.</p><p><b>Overflow</b>: two positives give a negative, or two negatives give a positive.</p>",n:10,kinds:[
+ ()=>{let a,b;do{a=R(-90,90);b=R(-90,90)}while(a+b<-128||a+b>127||a>=0&&b>=0||!a||!b);const x=B(a),y=B(b);return BQ(`Add these 8-bit <b>two's complement</b> numbers (${a} and ${b}).${cols([x,y],['','+'])}`,B(a+b),wAdd(x,y,`<p>The result <code>${nib(B(a+b))}</code> is ${a+b} in two's complement. Check: ${a} + ${b} = ${a+b}.</p>`,true),v=>`Your answer is worth ${sval(v)} in two's complement, but ${a} + ${b} = ${a+b}. Add column by column and ignore a carry out of the left bit.`,{head:HEAD.tc})},
+ ()=>{let a,b;do{a=R(5,100);b=R(5,100)}while(a-b<-128||a-b>127||a==b);const x=B(a),y=B(-b);return BQ(`Work out ${big(a+' − '+b)} in 8-bit two's complement by adding ${a} and −${b}.<br><code>${nib(B(a))}</code> is ${a}.`,B(a-b),`<p>−${b} in two's complement: +${b} = <code>${nib(B(b))}</code>, flip = <code>${nib(flip(B(b)))}</code>, add 1 = <code>${nib(y)}</code></p>`+wAdd(B(a),y,`<p>${a} − ${b} = ${a-b} = <code>${nib(B(a-b))}</code></p>`,true),v=>v==B(a+b)?`That is ${a} + ${b}. Add −${b}, not +${b}: flip the bits of ${b} and add 1 first.`:`Your answer is worth ${sval(v)} in two's complement, but ${a} − ${b} = ${a-b}.`,{head:HEAD.tc})},
+ ()=>{const neg=Math.random()<.5,o=Math.random()<.5;let a,b;if(!neg){a=R(30,120);b=o?R(128-a,127):R(5,127-a)}else{a=-R(30,120);b=o?-R(129+a,128):-R(5,128+a)}const s=a+b;return CQ(`These 8-bit <b>two's complement</b> numbers are added. Does an overflow occur?${cols([B(a),B(b)],[`(${a})`,`+ (${b})`])}`,o?'Yes':'No',['Yes','No'],`<p>${a} + ${b} = ${s}. 8-bit two's complement can store −128 to 127. ${o?`${s} is outside that range, so the result looks ${neg?'positive':'negative'}: <b>overflow</b>.`:'That fits, so there is <b>no overflow</b>.'}</p>`,()=>'Two\'s complement 8 bits can hold −128 to 127. Is the real answer inside that range?')}]},
+{lv:'HA',t:'Arithmetic shifts',help:"<p><b>Arithmetic shift right</b>: bits move right and the sign bit is copied into the gap on the left, so a negative number stays negative. Each place divides by 2, rounding down.</p><p><b>Arithmetic shift left</b> works like a logical shift left: 0s fill the right.</p>",n:10,kinds:[
+ ...Array(2).fill(()=>{const k=R(1,2),n=-R(20,120),b=B(n);return BQ(`Do an <b>arithmetic shift right by ${k} place${k>1?'s':''}</b> on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,k,'R','asr'),wShift(b,k,'R','asr'),v=>v==shiftRes(b,k,'R')?'That is a logical shift. An arithmetic shift copies the sign bit (1) into the gap on the left.':v==shiftRes(b,k,'L')?'That is a shift left.':`Move every bit ${k} place${k>1?'s':''} right and copy the sign bit into the gap.`,{head:HEAD.tc})}),
+ ()=>{const n=R(20,120),b=B(n);return BQ(`Do an <b>arithmetic shift right by 1 place</b> on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,1,'R','asr'),wShift(b,1,'R','asr'),v=>v=='1'+b.slice(0,7)?'The sign bit is 0 here, so 0 is copied into the gap.':'Move every bit right and copy the sign bit into the gap.',{head:HEAD.tc})},
+ ()=>{const n=-2*R(5,60)-R(0,1),b=B(n);return Q(`${big(nib(b))} is ${n} in two's complement. What is its denary value after an arithmetic shift right by 1 place?`,Math.floor(n/2),wShift(b,1,'R','asr'),v=>+v==-Math.floor(n/2)||+v==Math.floor(-n/2)?'An arithmetic shift keeps the sign, so the answer is still negative.':+v==n*2?'Shifting right divides by 2.':+v==Math.ceil(n/2)?'Rounding goes down (towards the more negative number). Try shifting the bits and reading the result.':'Shift the bits right, copy the sign bit in, then read the new value with −128 for the left bit.')},
+ ()=>CQ("Which shift should be used to divide a negative two's complement number by 2?",'Arithmetic shift right',['Arithmetic shift right','Logical shift right','Logical shift left','Arithmetic shift left'],"<p>An <b>arithmetic shift right</b> copies the sign bit, so a negative number stays negative. A logical shift right puts 0 on the left, which would make it positive.</p>",()=>'Dividing means shifting right. Which right shift keeps the sign bit?')]},
+{lv:'HA',t:'Units: calculations',help:'<p>Put both sizes in the same unit first.</p><p>1 GiB = 1024 MiB, 1 MiB = 1024 KiB, 1 KiB = 1024 bytes<br>1 TB = 1000 GB, 1 GB = 1000 MB, 1 MB = 1000 KB</p><p>1 byte = 8 bits</p>',n:10,kinds:[
+ ()=>{const x=pick([2,4,8,16,32]),y=R(1,8),a=y*1024/x;return Q(`How many ${x} MiB files can fit on a ${y} GiB memory stick?`,a,`<p>${y} GiB = ${y} × 1024 = ${fmtN(y*1024)} MiB. ${fmtN(y*1024)} ÷ ${x} = <b>${fmtN(a)}</b> files.</p>`,v=>+v==y*1000/x?'GiB and MiB are binary units: 1 GiB = 1024 MiB, not 1000.':+v==y/x?'Change the GiB into MiB first (× 1024), then divide.':'Change GiB to MiB (× 1024), then divide by the file size.')},
+ ()=>{const x=pick([2,4,5,8,10]),y=R(2,9),a=y*1000/x;return Q(`A song is ${x} MB. How many songs fit on a ${y} GB phone?`,a,`<p>${y} GB = ${y} × 1000 = ${fmtN(y*1000)} MB. ${fmtN(y*1000)} ÷ ${x} = <b>${fmtN(a)}</b> songs.</p>`,v=>+v==y*1024/x?'GB and MB are decimal units: 1 GB = 1000 MB.':'Change GB to MB (× 1000), then divide by the song size.')},
+ ()=>{const n=R(2,8);return Q(`A file is ${n} KiB. How many <b>bits</b> is that?`,n*1024*8,`<p>${n} KiB = ${n} × 1024 = ${fmtN(n*1024)} bytes. ${fmtN(n*1024)} × 8 = <b>${fmtN(n*8192)}</b> bits.</p>`,v=>+v==n*1024?'That is the number of bytes. Multiply by 8 for bits.':+v==n*8000?'KiB is a binary unit: 1 KiB = 1024 bytes.':'KiB → bytes (× 1024) → bits (× 8).')},
+ ()=>CQ('Which of these is the largest?','1 GiB',['1 GiB','1 GB','999 MB','1000 MiB'],'<p>1 GiB = 1024 MiB, which is more than 1000 MiB. 1 GB = 1000 MB. 1 MiB is bigger than 1 MB, so 1 GiB is the largest.</p>',()=>'Binary units (GiB, MiB) are a little bigger than decimal ones (GB, MB). Compare in the same unit.'),
+ ()=>{const y=R(2,9);return Q(`How many MB are there in ${y} TB?`,y*1e6,`<p>1 TB = 1000 GB and 1 GB = 1000 MB, so ${y} × 1000 × 1000 = <b>${fmtN(y*1e6)}</b> MB.</p>`,v=>+v==y*1000?'That is GB. Multiply by 1000 again to get MB.':+v==y*1024*1024?'TB, GB and MB are decimal units: use 1000, not 1024.':'TB → GB (× 1000) → MB (× 1000).')}]}
+];
+// ================= MORE LEVELS =================
+// question makers borrowed from other levels; src records where each question came from
+const kindsOf=(...ts)=>ts.flatMap(t=>T.find(k=>k.t==t).kinds.map(f=>()=>{const q=f();delete q.live;q.src=t;return q}));
+function w16(b){const g=b.match(/.{4}/g);return `<p>Split into nibbles from the right and convert each one using 8 4 2 1:</p><p>${g.map(x=>`<code>${x}</code> = ${val(x)} = <b>${HX(val(x),1)}</b>`).join(' &nbsp; ')}</p><p>So the answer is <b>${HX(val(b),g.length)}</b></p>`}
+function wH3toD(h){const d=[...h].map(c=>parseInt(c,16));return `<p>For 3 hex digits the place values are 256, 16 and 1.</p><p>${d[0]} × 256 + ${d[1]} × 16 + ${d[2]} = ${d[0]*256} + ${d[1]*16} + ${d[2]} = <b>${parseInt(h,16)}</b></p>`}
+function wDtoH3(n){const a=n>>8,r=n&255,b=r>>4,c=r&15;return `<p>Place values for 3 hex digits: 256, 16, 1.</p><p>${n} ÷ 256 = ${a} remainder ${r} → first digit <b>${HX(a,1)}</b></p><p>${r} ÷ 16 = ${b} remainder ${c} → <b>${HX(b,1)}</b> then <b>${HX(c,1)}</b></p><p>So ${n} = <b>${HX(n,3)}</b></p>`}
+const MIXED={lv:'MA',t:'Mixed conversions',help:'<p><b>Binary ↔ denary</b>: place values 128 64 32 16 8 4 2 1.</p><p><b>Binary ↔ hex</b>: one hex digit for each nibble (4 bits).</p><p><b>Denary ↔ hex</b>: first digit is 16s, second is 1s. Or go through binary.</p><p>A = 10, B = 11, C = 12, D = 13, E = 14, F = 15</p>',n:5,
+ kinds:kindsOf('Binary to denary','Denary to binary','Binary to hexadecimal','Hexadecimal to binary','Denary to hexadecimal','Hexadecimal to denary')};
+const RANGES={lv:'HA',t:'Signed number ranges',help:"<p><b>Unsigned</b> 8 bits: 0 to 255.</p><p><b>Sign and magnitude</b> 8 bits: −127 to +127. It has two zeros (0000 0000 and 1000 0000).</p><p><b>Two's complement</b> n bits: −2<sup>n−1</sup> to 2<sup>n−1</sup> − 1. For 8 bits: −128 to +127.</p>",n:10,kinds:[
+ ()=>{const n=R(4,8);return Q(`What is the <b>smallest</b> (most negative) number that can be stored in ${n}-bit two's complement?`,-(2**(n-1)),`<p>The left bit is worth −2<sup>${n-1}</sup> = −${2**(n-1)}. With only that bit set, the number is <b>−${2**(n-1)}</b>.</p>`,v=>+v==-(2**(n-1)-1)?`That is the smallest in sign and magnitude. Two's complement goes one further: −${2**(n-1)}.`:+v==2**(n-1)?'The smallest number is negative.':`The left bit is worth −2 to the power ${n-1}.`)},
+ ()=>{const n=R(4,8);return Q(`What is the <b>largest</b> number that can be stored in ${n}-bit two's complement?`,2**(n-1)-1,`<p>The left bit must be 0 (positive) and all the others 1: 2<sup>${n-1}</sup> − 1 = <b>${2**(n-1)-1}</b>.</p>`,v=>+v==2**n-1?`That is the largest unsigned number. In two's complement the left bit must stay 0 for a positive number.`:+v==2**(n-1)?`Close: it is one less, because 0 also needs a code.`:`Set every bit except the left bit to 1.`)},
+ ()=>Q('What is the largest number that can be stored in 8-bit <b>sign and magnitude</b>?',127,'<p>The sign bit is 0 and the 7 magnitude bits are all 1: 64 + 32 + 16 + 8 + 4 + 2 + 1 = <b>127</b>.</p>',v=>+v==255?'One bit is used for the sign, so only 7 bits hold the size.':'7 bits hold the size: the largest is 127.'),
+ ()=>Q('What is the smallest number that can be stored in 8-bit <b>sign and magnitude</b>?',-127,'<p>The sign bit is 1 (negative) and the 7 magnitude bits are all 1: <b>−127</b>.</p>',v=>+v==-128?"−128 is the smallest in two's complement. Sign and magnitude only reaches −127.":'Set the sign bit to 1 and make the size as big as possible.'),
+ ()=>Q('What is the largest number that can be stored in 8-bit <b>unsigned</b> binary?',255,'<p>All 8 bits are 1: 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = <b>255</b>.</p>',v=>+v==256?'There are 256 values, but they start at 0, so the largest is 255.':+v==127?"That is the largest in two's complement. Unsigned numbers use all 8 bits for the size.":'Set all 8 bits to 1.'),
+ ()=>CQ('Which way of storing signed numbers has <b>two different codes for zero</b>?','Sign and magnitude',['Sign and magnitude',"Two's complement",'Unsigned binary'],"<p>In sign and magnitude, 0000 0000 is +0 and 1000 0000 is −0. Two's complement has only one zero.</p>",()=>'Think about what 1000 0000 means in each system.'),
+ ()=>CQ("Why do computers use two's complement rather than sign and magnitude?","Normal binary addition works for negative numbers",["Normal binary addition works for negative numbers",'It can store bigger positive numbers','It uses fewer bits','It has two codes for zero'],"<p>With two's complement you can add positive and negative numbers with ordinary binary addition, and there is only one zero. Both systems store +127 at most in 8 bits.</p>",()=>'Think about what happens when you add a negative number.'),
+ ()=>Q('How many different numbers can 8-bit <b>sign and magnitude</b> represent?',255,'<p>There are 256 patterns, but +0 and −0 are the same number, so there are <b>255</b> different numbers (−127 to +127).</p>',v=>+v==256?'Two of the 256 patterns both mean zero.':'Count from −127 to +127.')]};
+const LOST={lv:'HA',t:'Shifts: lost bits and overflow',help:'<p>A shift left that pushes a 1 off the left end loses it, so the answer is no longer the number × 2. This is an overflow.</p><p>A shift right that pushes a 1 off the right end loses accuracy (the remainder is lost).</p><p>An <b>arithmetic</b> shift left overflows if the sign bit changes.</p>',n:10,kinds:[
+ ()=>{const k=R(1,2),o=Math.random()<.5,n=o?R(2**(8-k),255):R(1,2**(8-k)-1),b=B(n);return CQ(`A logical shift left by ${k} place${k>1?'s':''} is done on ${big(nib(b))} (${n}). Is the result exactly ${n} × ${2**k}?`,o?'No':'Yes',['Yes','No'],wShift(b,k,'L'),()=>`Look at the left ${k} bit${k>1?'s':''}. If a 1 falls off the end, the answer is wrong.`)},
+ ()=>{const k=R(1,2),n=R(2**(8-k),255),b=B(n),r=(n<<k)&255;return Q(`What is the denary value of ${big(nib(b))} (${n}) after a logical shift left by ${k} place${k>1?'s':''}?`,r,wShift(b,k,'L'),v=>+v==n*2**k?`${n} × ${2**k} = ${n*2**k} does not fit in 8 bits. Shift the bits and read the 8 bits that are left.`:'Shift the bits, fill with 0s, drop the bits that fall off, then convert.')},
+ ()=>{const n=2*R(10,120)+1,b=B(n);return Q(`${big(nib(b))} is ${n}. After a logical shift right by 1 place, what is its denary value?`,n>>1,wShift(b,1,'R'),v=>+v==n/2||+v==Math.ceil(n/2)?'The 1 that falls off the right is lost, so the answer rounds down.':'Shift right and read the new value.')},
+ ()=>{const o=Math.random()<.5;let n;do{n=R(-128,127)}while(((B(n)[0]!=B(n)[1]))!=o);const b=B(n);return CQ(`An <b>arithmetic shift left by 1</b> is done on the two's complement number ${big(nib(b))} (${n}). Does an overflow happen?`,o?'Yes':'No',['Yes','No'],`<p>After the shift the new left bit is <code>${b[1]}</code> and it was <code>${b[0]}</code>. ${o?`The sign bit changes, so the result has the wrong sign: <b>overflow</b>. (${n} × 2 = ${n*2} does not fit in −128 to 127.)`:`The sign bit stays the same, so the result ${n*2} is correct: <b>no overflow</b>.`}</p>`,()=>'After the shift, does the left (sign) bit change?')}]};
+const BIGHEX={lv:'HA',t:'Larger hexadecimal numbers',help:'<p><b>Binary → hex</b>: split into nibbles starting from the right. Each nibble is one hex digit.</p><p><b>3 hex digits</b>: place values 256, 16, 1.</p><p>A = 10, B = 11, C = 12, D = 13, E = 14, F = 15</p>',n:10,kinds:[
+ ()=>{const n=R(4096,65535),b=B(n,16);return Q(`Convert this 16-bit binary number to hexadecimal.<br>${big(nib(b))}`,HX(n,4),w16(b),v=>v.length==4&&v.split('').reverse().join('')==HX(n,4)?'The digits are in the wrong order. The left nibble gives the left hex digit.':'Split into 4 nibbles and change each one into one hex digit.',{mode:'hex'})},
+ ()=>{const n=R(256,4095),b=B(n,12);return Q(`Convert this 12-bit binary number to hexadecimal.<br>${big(nib(b))}`,HX(n,3),w16(b),v=>'Split into 3 nibbles and change each one into one hex digit.',{mode:'hex'})},
+ ()=>{const n=R(256,4095),h=HX(n,3);return Q(`Convert the hexadecimal number ${big(h)} to denary.`,n,wH3toD(h),v=>{const d=[...h].map(c=>parseInt(c,16));return +v==d[0]*100+d[1]*10+d[2]?'Hex place values are 256, 16 and 1, not 100, 10 and 1.':+v==d[0]*16*16*16+d[1]*16+d[2]?'The first of 3 digits is worth 256 (16 × 16).':'Multiply the digits by 256, 16 and 1, then add.'})},
+ ()=>{const n=R(256,4095);return Q(`Convert ${big(n)} to hexadecimal.`,HX(n,3),wDtoH3(n),v=>v.length==2?'Numbers from 256 upwards need 3 hex digits.':'Divide by 256 for the first digit, then use the remainder for the other two.',{mode:'hex'})},
+ ()=>{const n=R(4096,65535),h=HX(n,4);return Q(`Convert the hexadecimal number ${big(h)} to 16-bit binary.`,B(n,16),`<p>Change each hex digit into 4 bits:</p><p>${[...h].map(c=>`<b>${c}</b> = <code>${B(parseInt(c,16),4)}</code>`).join(' &nbsp; ')}</p><p>So ${h} = <b>${nib(B(n,16))}</b></p>`,v=>'Change each hex digit into 4 bits (8 4 2 1) and keep them in the same order.',{mode:'bin'})}]};
+const tag=(fs,t)=>fs.map(f=>()=>{const q=f();q.src=t;return q});
+const FINAL={lv:'HA',t:'Final challenge',help:'<p>Questions from every Expert topic: two\'s complement, signed ranges, multiplication, signed arithmetic, shifts, larger hex numbers and units.</p><p>Use the worked solutions if you get stuck.</p>',n:10,
+ kinds:kindsOf("Two's complement: denary to binary","Two's complement: binary to denary",'Binary multiplication',"Two's complement arithmetic",'Arithmetic shifts','Units: calculations','Binary addition and overflow','Binary subtraction').concat(tag(RANGES.kinds.slice(0,2),RANGES.t),tag(LOST.kinds.slice(1,2),LOST.t),tag(BIGHEX.kinds.slice(2,3),BIGHEX.t))};
+T.splice(T.findIndex(k=>k.lv=='HA'),0,MIXED);
+T.splice(T.findIndex(k=>k.t=="Two's complement: binary to denary")+1,0,RANGES);
+T.splice(T.findIndex(k=>k.t=='Arithmetic shifts')+1,0,LOST,BIGHEX);
+T.push(FINAL);
+
+// ================= SHIFTS AND TWO'S COMPLEMENT ARITHMETIC: EXTRA LEVELS =================
+const shN=(b,k)=>`<b>${k} place${k>1?'s':''}</b>`;
+const LSHIFTS={lv:'MA',t:'Logical shifts: left and right',help:'<p><b>Logical shift left</b>: bits move left, 0s fill the right. Each place × 2.</p><p><b>Logical shift right</b>: bits move right, 0s fill the left. Each place ÷ 2, rounding down.</p><p>Bits that fall off either end are lost.</p>',n:5,kinds:[
+ ()=>{const k=R(1,3),b=B(R(1,255));return BQ(`Do a <b>logical shift left</b> by ${shN(b,k)} on ${big(nib(b))}`,shiftRes(b,k,'L'),wShift(b,k,'L'),v=>v==shiftRes(b,k,'R')?'That is a shift right. Left moves the bits towards the 128 end.':`Move every bit ${k} place${k>1?'s':''} left and fill the right with 0s.`)},
+ ()=>{const k=R(1,3),b=B(R(1,255));return BQ(`Do a <b>logical shift right</b> by ${shN(b,k)} on ${big(nib(b))}`,shiftRes(b,k,'R'),wShift(b,k,'R'),v=>v==shiftRes(b,k,'L')?'That is a shift left. Right moves the bits towards the 1 end.':`Move every bit ${k} place${k>1?'s':''} right and fill the left with 0s.`)},
+ ()=>{const k=R(1,3),n=R(1,2**(8-k)-1),b=B(n);return Q(`${big(nib(b))} is ${n}. What is its denary value after a <b>logical shift left</b> by ${shN(b,k)}?`,n*2**k,wShift(b,k,'L'),v=>+v==n>>k?'Left multiplies. Right divides.':+v==n*2*k?`Each place doubles: × ${2**k}, not × ${2*k}.`:`Each place left multiplies by 2, so ${k} place${k>1?'s':''} is × ${2**k}.`)},
+ ()=>{const k=R(1,3),n=R(20,255),b=B(n);return Q(`${big(nib(b))} is ${n}. What is its denary value after a <b>logical shift right</b> by ${shN(b,k)}?`,n>>k,wShift(b,k,'R'),v=>+v==n*2**k?'Right divides. Left multiplies.':+v==n/2**k&&n%2**k?'The bits that fall off are lost, so the answer is rounded down.':`Each place right divides by 2 (rounding down), so ${k} place${k>1?'s':''} is ÷ ${2**k}.`)},
+ ()=>{const k=R(1,3),d=Math.random()<.5;const a=`Logical shift ${d?'left':'right'} by ${k}`;return CQ(`Which shift ${d?'multiplies':'divides'} an unsigned binary number by ${2**k}?`,a,shuffle([a,`Logical shift ${d?'right':'left'} by ${k}`,`Logical shift ${d?'left':'right'} by ${2**k}`,`Logical shift ${d?'left':'right'} by ${k+1}`]),`<p>Each place ${d?'left doubles':'right halves'} the number. ${2**k} = 2<sup>${k}</sup>, so shift ${d?'left':'right'} by <b>${k}</b>.</p>`,()=>`${d?'Multiplying':'Dividing'} by 2 is one place. How many times do you double 1 to reach ${2**k}?`)}]};
+const ASL={lv:'HA',t:'Arithmetic shift left',help:"<p>An <b>arithmetic shift left</b> moves every bit left and fills the right with 0s, like a logical shift left. Each place multiplies by 2.</p><p>For a two's complement number, if the sign bit changes the answer is wrong: <b>overflow</b>.</p>",n:10,kinds:[
+ ...Array(2).fill(()=>{const k=R(1,2),n=-R(1,Math.floor(128/2**k)),b=B(n);return BQ(`Do an <b>arithmetic shift left</b> by ${shN(b,k)} on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,k,'L'),wShift(b,k,'L','asl'),v=>v==shiftRes(b,k,'R','asr')?'That is a shift right. Left moves the bits towards the sign bit.':v==b[0].repeat(k)+b.slice(0,8-k)?'That copies the sign bit, which is what an arithmetic shift RIGHT does.':`Move every bit ${k} place${k>1?'s':''} left and fill the right with 0s.`,{head:HEAD.tc})}),
+ ()=>{const k=R(1,2),n=R(1,Math.floor(127/2**k)),b=B(n);return BQ(`Do an <b>arithmetic shift left</b> by ${shN(b,k)} on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,k,'L'),wShift(b,k,'L','asl'),v=>`Move every bit ${k} place${k>1?'s':''} left and fill the right with 0s.`,{head:HEAD.tc})},
+ ...Array(2).fill(()=>{const k=R(1,2),n=R(-Math.floor(128/2**k),Math.floor(127/2**k))||-3,b=B(n);return Q(`${big(nib(b))} is ${n} in two's complement. What is its denary value after an <b>arithmetic shift left</b> by ${shN(b,k)}?`,n*2**k,wShift(b,k,'L','asl'),v=>+v==-n*2**k?'The sign stays the same: no overflow happens here.':+v==Math.floor(n/2**k)?'Left multiplies. Right divides.':`Each place left multiplies by 2, so the answer is ${n} × ${2**k}.`)}),
+ ()=>{const o=Math.random()<.5;let n;do{n=R(-128,127)}while((B(n)[0]!=B(n)[1])!=o);const b=B(n);return CQ(`An <b>arithmetic shift left by 1</b> is done on ${big(nib(b))} (${n}). Does an overflow happen?`,o?'Yes':'No',['Yes','No'],`<p>${n} × 2 = ${n*2}. 8-bit two's complement stores −128 to 127. ${o?'That does not fit, and the sign bit changes: <b>overflow</b>.':'That fits, and the sign bit stays the same: <b>no overflow</b>.'}</p>`,()=>'Work out the number × 2. Does it fit between −128 and 127?')},
+ ()=>{const n=R(65,127),b=B(n);return Q(`${big(nib(b))} is ${n}. After an <b>arithmetic shift left by 1</b>, what value does the 8-bit two's complement result show?`,sval(shiftRes(b,1,'L')),wShift(b,1,'L','asl'),v=>+v==n*2?`${n*2} does not fit in 8-bit two's complement (max 127). Shift the bits and read the result with −128 for the left bit.`:'Shift the bits left, then read the result using −128 for the left bit.')}]};
+const ASR={lv:'HA',t:'Arithmetic shift right',help:"<p>An <b>arithmetic shift right</b> moves every bit right and <b>copies the sign bit</b> into the gap on the left.</p><p>Negative numbers stay negative. Each place divides by 2, rounding down (towards the more negative number).</p><p>A logical shift right fills with 0s instead.</p>",n:10,kinds:[
+ ...Array(3).fill(()=>{const k=R(1,3),n=-R(9,128),b=B(n);return BQ(`Do an <b>arithmetic shift right</b> by ${shN(b,k)} on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,k,'R','asr'),wShift(b,k,'R','asr'),v=>v==shiftRes(b,k,'R')?'That is a logical shift. An arithmetic shift copies the sign bit (1) into the gap.':v==shiftRes(b,k,'L')?'That is a shift left.':`Move every bit ${k} place${k>1?'s':''} right and copy the sign bit into the gaps.`,{head:HEAD.tc})}),
+ ()=>{const k=R(1,3),n=R(9,127),b=B(n);return BQ(`Do an <b>arithmetic shift right</b> by ${shN(b,k)} on this two's complement number (${n}).<br>${big(nib(b))}`,shiftRes(b,k,'R','asr'),wShift(b,k,'R','asr'),v=>v=='1'.repeat(k)+b.slice(0,8-k)?'The sign bit is 0 here, so 0s are copied into the gap.':`Move every bit right and copy the sign bit (0) into the gaps.`,{head:HEAD.tc})},
+ ...Array(2).fill(()=>{const k=R(1,2),n=-R(9,128),b=B(n);return Q(`${big(nib(b))} is ${n} in two's complement. What is its denary value after an <b>arithmetic shift right</b> by ${shN(b,k)}?`,Math.floor(n/2**k),wShift(b,k,'R','asr'),v=>+v==Math.ceil(n/2**k)&&n%2**k?'Rounding goes down, towards the more negative number. Shift the bits and read the result.':+v==-Math.floor(n/2**k)||+v==Math.floor(-n/2**k)?'An arithmetic shift keeps the sign, so the answer is still negative.':+v==n*2**k?'Right divides. Left multiplies.':'Shift the bits, copy the sign bit in, then read the value with −128 for the left bit.')}),
+ ()=>{const n=-R(9,128),b=B(n),a=nib(shiftRes(b,1,'R','asr'));return CQ(`Which of these is ${big(nib(b))} after an <b>arithmetic shift right by 1</b>?`,a,shuffle([a,nib(shiftRes(b,1,'R')),nib(shiftRes(b,1,'L')),nib(b.slice(1)+b[0])]),wShift(b,1,'R','asr'),()=>'Right shift, and copy the sign bit into the gap on the left.')},
+ ()=>{const n=-R(9,128),b=B(n);return CQ(`${big(nib(b))} is ${n}. After a <b>logical</b> shift right by 1, is it still a negative two's complement number?`,'No',['Yes','No'],`<p>A logical shift right puts a <b>0</b> into the sign bit, so the result is positive: <code>${nib(shiftRes(b,1,'R'))}</code> = ${sval(shiftRes(b,1,'R'))}. That is why an <b>arithmetic</b> shift right is used for signed numbers.</p>`,()=>'What goes into the left bit during a logical shift right?')}]};
+const tcCols=(a,b,op='+')=>cols([B(a),B(b)],[`(${a})`,`${op} (${b})`]);
+const TCADD={lv:'HA',t:"Two's complement addition",help:"<p>Write both numbers in 8-bit two's complement, then add them column by column like normal binary addition.</p><p>Ignore any carry out of the left bit.</p><p>Read the answer with the left bit worth −128.</p>",n:10,kinds:[
+ ...Array(2).fill(()=>{let a,b;do{a=-R(5,100);b=-R(5,100)}while(a+b<-128);return BQ(`Add these 8-bit two's complement numbers.${tcCols(a,b)}`,B(a+b),wAdd(B(a),B(b),`<p>The result is ${a+b}. Check: ${a} + ${b} = ${a+b}.</p>`,true),v=>v==B(a+b,9).slice(0,8)?'Keep the right-hand 8 bits and ignore the carry out of the left bit.':`Your answer is worth ${sval(v)}, but ${a} + ${b} = ${a+b}.`,{head:HEAD.tc})}),
+ ...Array(2).fill(()=>{let a,b;do{a=R(5,120);b=-R(5,120)}while(a+b==0);if(Math.random()<.5)[a,b]=[b,a];return BQ(`Add these 8-bit two's complement numbers.${tcCols(a,b)}`,B(a+b),wAdd(B(a),B(b),`<p>The result is ${a+b}. Check: ${a} + ${b} = ${a+b}.</p>`,true),v=>`Your answer is worth ${sval(v)}, but ${a} + ${b} = ${a+b}. Add column by column and ignore a carry out of the left bit.`,{head:HEAD.tc})}),
+ ...Array(2).fill(()=>{let a,b;do{a=R(-100,100);b=R(-100,100)}while(a+b<-128||a+b>127||a>=0&&b>=0||!a||!b);return Q(`Add these 8-bit two's complement numbers and give the answer in <b>denary</b>.${cols([B(a),B(b)],['','+'])}`,a+b,`<p>${nib(B(a))} = ${a} and ${nib(B(b))} = ${b}.</p>`+wAdd(B(a),B(b),`<p>${a} + ${b} = <b>${a+b}</b></p>`,true),v=>+v==val(B(a+b))?'Read the result with the left bit worth −128.':`Convert each number (left bit worth −128), or add in binary and convert the result.`)}),
+ ...Array(2).fill(()=>{let a,b;do{a=R(-100,100);b=-R(5,100)}while(a+b<-128||a+b>127||!a);return BQ(`Work out ${big(a+' + ('+b+')')} in 8-bit two's complement.`,B(a+b),`<p>${a} = <code>${nib(B(a))}</code>, ${b} = <code>${nib(B(b))}</code></p>`+wAdd(B(a),B(b),`<p>${a} + ${b} = ${a+b} = <code>${nib(B(a+b))}</code></p>`,true),v=>v==B(a-b)?`That is ${a} − (${b}). This question adds a negative number.`:`Your answer is worth ${sval(v)}, but ${a} + (${b}) = ${a+b}. Change both numbers to two's complement first.`,{head:HEAD.tc})})]};
+const TCSUB={lv:'HA',t:"Two's complement subtraction",help:"<p>To work out <b>A − B</b>, add A and <b>−B</b>.</p><p>To make −B: write B in binary, flip every bit, add 1.</p><p>A − (−B) is the same as A + B.</p><p>Ignore any carry out of the left bit.</p>",n:10,kinds:[
+ ()=>{const a=R(10,100),b=R(5,100);return BQ(`The first step of ${big(a+' − '+b)} is to make −${b}. Write −${b} in 8-bit two's complement.`,B(-b),wTC(-b),v=>v==B(b)?`That is +${b}. Flip every bit and add 1.`:v==flip(B(b))?'You flipped the bits. Now add 1.':`Your bits are worth ${sval(v)}.`,{head:HEAD.tc})},
+ ...Array(3).fill(()=>{let a,b;do{a=R(5,110);b=R(5,110)}while(a==b||a-b<-128);return BQ(`Work out ${big(a+' − '+b)} in 8-bit two's complement by adding ${a} and −${b}.`,B(a-b),`<p>${a} = <code>${nib(B(a))}</code>. −${b}: +${b} = <code>${nib(B(b))}</code>, flip = <code>${nib(flip(B(b)))}</code>, add 1 = <code>${nib(B(-b))}</code></p>`+wAdd(B(a),B(-b),`<p>${a} − ${b} = ${a-b} = <code>${nib(B(a-b))}</code></p>`,true),v=>v==B(a+b)?`That is ${a} + ${b}. Add −${b} instead.`:v==B(b-a)?`That is ${b} − ${a}. Take ${b} away from ${a}.`:`Your answer is worth ${sval(v)}, but ${a} − ${b} = ${a-b}.`,{head:HEAD.tc})}),
+ ...Array(2).fill(()=>{let a,b;do{a=R(-80,80);b=-R(5,60)}while(a-b>127||!a);return BQ(`Work out ${big(a+' − ('+b+')')} in 8-bit two's complement.`,B(a-b),`<p>Taking away a negative is the same as adding: ${a} − (${b}) = ${a} + ${-b}.</p>`+wAdd(B(a),B(-b),`<p>${a} + ${-b} = ${a-b} = <code>${nib(B(a-b))}</code></p>`,true),v=>v==B(a+b)?`Subtracting ${b} means adding ${-b}. Two minus signs make a plus.`:`Your answer is worth ${sval(v)}, but ${a} − (${b}) = ${a-b}.`,{head:HEAD.tc})}),
+ ...Array(2).fill(()=>{let a,b;do{a=R(5,60);b=R(a+5,120)}while(a-b<-128);return BQ(`Subtract using two's complement: <code>${nib(B(a))}</code> − <code>${nib(B(b))}</code>. Give the 8-bit result.`,B(a-b),`<p>${nib(B(a))} = ${a} and ${nib(B(b))} = ${b}. −${b} = <code>${nib(B(-b))}</code></p>`+wAdd(B(a),B(-b),`<p>${a} − ${b} = ${a-b} = <code>${nib(B(a-b))}</code></p>`,true),v=>v==B(b-a)?'That is the second number minus the first. Take the second away from the first.':`Your answer is worth ${sval(v)}. Make the two's complement of the second number and add it to the first.`,{head:HEAD.tc})}),
+ ()=>{let a,b;do{a=R(5,100);b=R(5,120)}while(a==b||a-b<-128);return Q(`Use two's complement to work out <code>${nib(B(a))}</code> − <code>${nib(B(b))}</code>. Give the answer in <b>denary</b>.`,a-b,`<p>${nib(B(a))} = ${a}, ${nib(B(b))} = ${b}, −${b} = <code>${nib(B(-b))}</code></p>`+wAdd(B(a),B(-b),`<p>${a} − ${b} = <b>${a-b}</b></p>`,true),v=>+v==b-a?'Check the order: first number minus second.':+v==val(B(a-b))?'Read the result with the left bit worth −128.':'Convert both numbers to denary, or subtract in binary and convert the result.')}]};
+T.splice(T.findIndex(k=>k.t=='Logical shift right')+1,0,LSHIFTS);
+T.splice(T.findIndex(k=>k.t=="Two's complement arithmetic"),0,TCADD,TCSUB);
+T.splice(T.findIndex(k=>k.t=='Arithmetic shifts'),0,ASL,ASR);
+T.find(k=>k.t=="Two's complement arithmetic").help+='<p>This level mixes addition, subtraction and overflow.</p>';
+T.find(k=>k.t=='Arithmetic shifts').help+='<p>This level mixes arithmetic shifts left and right.</p>';
+FINAL.kinds.push(...tag(ASL.kinds,ASL.t),...tag(ASR.kinds,ASR.t),...tag(TCADD.kinds,TCADD.t),...tag(TCSUB.kinds,TCSUB.t));
+
+// ================= STATE =================
+const TN={LA:'Beginner',MA:'Intermediate',HA:'Expert'};
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let ti=0,score=0,mist=0,streak=0,unlocked=0,locked=false,startScore=0,QS=[],qi=0,tries=0,bits=[],
+ att=T.map(()=>0),mm=T.map(()=>0),best=T.map(()=>null),tim=T.map(()=>0),pon=T.map(()=>0),pname='',pyear='',pav='🤖',curLi=0,t0=Date.now();
+const SK='dataRepV1',KEY=k=>k.lv+':'+k.t;
+const data=()=>({u:unlocked,s:score,a:att,m:mm,b:best,t:tim,p:pon,k:T.map(KEY),n:pname,y:pyear,v:pav});
+function save(){try{localStorage.setItem(SK,JSON.stringify(data()))}catch(_){}}
+function load(){try{apply(JSON.parse(localStorage.getItem(SK)||'null'))}catch(_){}}
+function apply(d){if(!d||!Array.isArray(d.a)||!Array.isArray(d.k)||d.k.length!=d.a.length)return false;
+ pname=String(d.n||'').slice(0,40);pyear=String(d.y||'').slice(0,12);pav=String(d.v||'🤖').slice(0,4);score=d.s|0;
+ const now=T.map(KEY);d.k.forEach((key,i)=>{const j=now.indexOf(key);if(j<0)return;att[j]=d.a[i]|0;mm[j]=d.m&&d.m[i]|0;best[j]=d.b&&d.b[i]!=null?+d.b[i]||0:null;tim[j]=d.t?+d.t[i]||0:0;pon[j]=d.p?d.p[i]|0:0});
+ const passed=new Set(d.k.slice(0,d.u|0));let u=0;while(u<T.length&&passed.has(now[u]))u++;unlocked=u;return true}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+// ================= BUILD A LEVEL =================
+// make n questions, using each kind of question in turn (shuffled) and avoiding repeats
+function makeQuestions(k){const order=shuffle(k.kinds.map((_,i)=>i)),out=[],seen=new Set();
+ for(let i=0,miss=0;out.length<k.n&&i<k.n*60;i++){const q=k.kinds[order[(out.length+miss)%order.length]]();if(seen.has(q.html)){miss++;continue}seen.add(q.html);out.push(q)}
+ return out}
+function build(){tick();curLi=ti;const k=T[ti];mist=0;streak=0;locked=false;startScore=score;QS=makeQuestions(k);qi=0;
+ $('#lt').textContent=`Level ${ti+1}, ${k.t}`;$('#bd').textContent=TN[k.lv];$('#help').innerHTML=k.help;
+ $('#work').innerHTML='<p class="fact">The worked solution for each question appears here once you have answered it.</p>';
+ fb('','Answer each question, then press Check (or Enter). A wrong answer gives a hint; after two wrong tries you will see a worked solution.');showQ();render()}
+function showQ(){const q=QS[qi];tries=0;bits=q.mode=='bits'?Array(q.w).fill('0'):[];
+ let h=`<div class="qn">Question ${qi+1} of ${QS.length}</div><div class="qt">${q.html}</div>`;
+ if(q.mode=='bits')h+=`<div class="bitsbox"><table class="pv inp"><tr>${q.head.map(x=>`<th>${x}</th>`).join('')}</tr><tr>${bits.map((b,i)=>`<td><button class="bit" data-bit="${i}" aria-label="Bit ${i+1}">0</button></td>`).join('')}</tr></table>${q.live?'<p class="fact" id="live">Your bits are worth 0</p>':''}<p><button class="btn alt" id="clr">Clear</button> <button class="btn" id="chk">Check</button></p></div>`;
+ else if(q.mode=='choice')h+=`<div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-opt="${i}">${esc(o)}</button>`).join('')}</div>`;
+ else h+=`<p><input id="ans" class="ansin${q.mode=='bin'?' wide':''}" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="${q.mode=='hex'?'text':'numeric'}" placeholder="${q.mode=='hex'?'hex, e.g. 3F':q.mode=='bin'?'binary, e.g. 1010 0011 …':'your answer'}" aria-label="Your answer"> <button class="btn" id="chk">Check</button></p>`;
+ $('#q').innerHTML=h;if(q.mode=='choice')shuffle(q.opts);
+ if(q.mode=='choice')$('#q .opts').innerHTML=q.opts.map((o,i)=>`<button class="opt" data-opt="${i}">${esc(o)}</button>`).join('');
+ const f=$('#ans')||$('.bit');if(f&&!$('#m').style.display.includes('flex'))f.focus()}
+function render(){$('#sc').textContent=score;$('#sk').textContent=streak;$('#ms').textContent=mist;who();
+ $('#pb').style.width=qi/QS.length*100+'%';$('#pt').textContent=`(${qi} of ${QS.length} questions complete)`;
+ $('#tabs').innerHTML=['LA','MA','HA'].map(t=>`<div class="tier"><span class="tl t${t}">${TN[t]}</span>${T.map((k,i)=>k.lv!=t?'':`<button class="tab t${k.lv}${i==ti?' on':''}" ${i>unlocked?'disabled':''} onclick="go(${i})" title="${esc(k.t)}">${i>unlocked?'🔒':i<unlocked?'✓ ':''}${i+1}</button>`).join('')}</div>`).join('')}
+function fb(k,h){const f=$('#fb');f.className='fb '+k;f.innerHTML=h}
+function shake(el){if(!el)return;el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake')}
+// ================= CHECKING =================
+function readAnswer(q){if(q.mode=='bits')return bits.join('');if(q.mode=='num'){const v=$('#ans').value.replace(/[\s,]/g,'');return v}if(q.mode=='bin')return $('#ans').value.replace(/\s/g,'')
+ return $('#ans').value.toUpperCase().replace(/\s/g,'').replace(/^(0X|&H|#)/,'')}
+function isRight(q,v){if(q.mode=='num')return /^[+-]?\d+$/.test(v)&&+v==+q.ans;if(q.mode=='hex')return /^[0-9A-F]{1,4}$/.test(v)&&parseInt(v,16)==parseInt(q.ans,16);if(q.mode=='bin')return /^[01]{1,16}$/.test(v)&&parseInt(v,2)==parseInt(q.ans,2);return v==q.ans}
+function check(choice){const q=QS[qi];if(locked||!q)return;let v=q.mode=='choice'?q.opts[choice]:readAnswer(q);
+ if(q.mode=='num'&&!/^[+-]?\d+$/.test(v)){fb('',v?'Type a whole number using digits only.':'Type your answer first.');return}
+ if((q.mode=='hex'||q.mode=='bin')&&!v){fb('','Type your answer first.');return}
+ if(isRight(q,v)){streak++;const p=10+Math.min(streak-1,4)*2;score+=p;
+  $('#work').innerHTML=`<p class="wq">Question ${qi+1}: ${q.mode=='bits'||q.mode=='bin'?'<code>'+esc(q.ans.replace(/(.{4})(?=.)/g,'$1 '))+'</code>':esc(q.ans)} ✓</p>${q.work}`;
+  fb('ok',`${pav} ${['Nice one!','Correct!','Spot on!','Great working!'][Math.floor(Math.random()*4)]} +${p} points${streak>1?` (streak bonus ×${streak})`:''}`);
+  qi++;if(qi>=QS.length){render();finish()}else{showQ();render()}return}
+ mist++;streak=0;score=Math.max(0,score-3);tries++;
+ let m=q.mode=='hex'&&!/^[0-9A-F]+$/.test(v)?'Hex digits are 0 to 9 and A to F only.':q.mode=='bin'&&!/^[01]+$/.test(v)?'Binary uses only the digits 0 and 1.':q.hint(v)||'Not the right answer yet.';
+ if(tries>=2){$('#work').innerHTML=`<p class="wq">Worked solution for question ${qi+1}:</p>${q.work}`;m+=' The worked solution is now shown on the right. Use it to answer.'}
+ fb('bad',`Not quite, −3 points. ${m}`);render();shake($('#q .bitsbox')||(q.mode=='choice'?$(`[data-opt="${choice}"]`):$('#ans')));
+ if(q.mode!='bits'&&q.mode!='choice'){$('#ans').select()}}
+function setBit(i,b){const q=QS[qi];if(locked||q.mode!='bits')return;bits[i]=b==null?(bits[i]=='1'?'0':'1'):b;const el=$(`[data-bit="${i}"]`);el.textContent=bits[i];el.classList.toggle('one',bits[i]=='1');
+ if(q.live&&$('#live'))$('#live').textContent=`Your bits are worth ${parseInt(bits.join(''),2)}`}
+// ================= FINISHING A LEVEL =================
+const MAXM=5,stars=m=>m==0?3:m<=2?2:1;
+function finish(){locked=true;tick();const ok=mist<=MAXM;att[ti]++;mm[ti]+=mist;if(ok&&!pon[ti])pon[ti]=att[ti];
+ if(ok){if(mist==0)score+=20;const g=score-startScore,p=best[ti]||0;best[ti]=Math.max(p,g);score=startScore+(best[ti]-p);unlocked=Math.max(unlocked,ti+1);confetti()}else score=startScore;
+ save();render();$('#pb').style.width='100%';
+ setTimeout(()=>modal(ok?`<h2>Level ${ti+1} complete!</h2><p style="font-size:2rem">${'⭐'.repeat(stars(mist))}</p><p>${mist==0?'Perfect run! +20 bonus.':`Passed with ${mist} mistake${mist>1?'s':''}. Aim for none to earn the +20 bonus.`} Score: ${score}. Progress saved.</p><button class="btn" onclick="next()">${ti<T.length-1?'Next level':'Get your certificate'}</button>`:`<h2>So close!</h2><p>You made ${mist} mistakes. You can make up to ${MAXM} and still move on, so try again.</p><p>You will get new questions each time.</p><button class="btn" onclick="retry()">Try again</button>`),700)}
+function next(){closeM();if(ti<T.length-1){ti++;build()}else cert()}
+function retry(){closeM();score=startScore;build()}
+function go(i){if(i>unlocked||i==ti)return;if(!locked)score=startScore;ti=i;build()}
+// ================= TIMER =================
+const fmt=ms=>{const s=Math.round((ms||0)/1000);return Math.floor(s/60)+'m '+String(s%60).padStart(2,'0')+'s'};
+function tick(){const n=Date.now();if(t0){tim[curLi]+=n-t0;t0=n}}
+function pause(){tick();t0=0}
+function resume(){t0=Date.now()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else if($('#m').style.display!='flex')resume()});
+setInterval(()=>{$('#tm').textContent=fmt(tim[ti]+(t0&&ti==curLi?Date.now()-t0:0))},1000);
+// ================= PROGRESS REPORT AND CERTIFICATE =================
+const passedN=()=>Math.min(unlocked,T.length),sum=a=>a.reduce((x,y)=>x+(y||0),0);
+function rank(){const m=sum(mm);return m==0?'Binary Master':m<=30?'Data Ace':'Data Finisher'}
+function dash(){const n=T.length,d=passedN(),
+ rows=T.map((k,i)=>`<tr><td>${i+1}. ${esc(k.t)}</td><td>${TN[k.lv]}</td><td>${i<unlocked?'✓ Passed':i==unlocked?'▶ Current':'🔒 Locked'}</td><td>${att[i]}${pon[i]?` (passed on #${pon[i]})`:''}</td><td>${fmt(tim[i])}</td><td>${mm[i]}</td><td>${best[i]==null?'-':best[i]}</td></tr>`).join(''),
+ hard=T.map((k,i)=>[i,mm[i]]).sort((a,b)=>b[1]-a[1])[0],slow=T.map((k,i)=>[i,tim[i]]).sort((a,b)=>b[1]-a[1])[0],
+ tier=['LA','MA','HA'].map(t=>{const ix=T.map((k,i)=>k.lv==t?i:-1).filter(i=>i>=0);return `${TN[t]}: ${ix.filter(i=>i<unlocked).length} of ${ix.length}`}).join(' · ');
+ return `<div class="dash"><p><b>Progress: ${d} of ${n} levels passed</b> <span class="fact">(${tier})</span></p><div class="prog"><i style="width:${d/n*100}%"></i></div><div class="stats" style="justify-content:center">${[['Score',score],['Attempts',sum(att)],['Time',fmt(sum(tim))],['Mistakes',sum(mm)]].map(x=>`<div class="stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('')}</div><div class="tw"><table class="st"><tr><th>Level</th><th>Tier</th><th>Status</th><th>Attempts</th><th>Time</th><th>Mistakes</th><th>Best</th></tr>${rows}</table></div><p class="fact">${hard[1]?`Most mistakes: Level ${hard[0]+1}, ${esc(T[hard[0]].t)}. `:''}${slow[1]?`Most time spent: Level ${slow[0]+1} (${fmt(slow[1])}).`:'Play a level to see your analysis here.'}</p></div>`}
+function summary(){tick();modal(`<h2>Progress and analysis report</h2><p>${pav} <b>${esc(pname)||'Player'}</b>${pyear?', '+esc(pyear):''}. Data Representation, IGCSE Computer Science (Edexcel 4CP0). ${new Date().toLocaleDateString()}</p>${dash()}<p class="np"><button class="btn" onclick="copyReport(this)">Copy report</button> <button class="btn alt" onclick="try{print()}catch(_){}">Print or save as PDF</button> <button class="btn alt" onclick="closeM()">Close</button></p>`)}
+function copyReport(b){const t=['Data Representation progress report',`${pname||'Player'}${pyear?', '+pyear:''}`,`Score: ${score}, ${passedN()} of ${T.length} levels passed, total time ${fmt(sum(tim))}`,'Level\tTier\tAttempts\tTime\tMistakes\tBest'].concat(T.map((k,i)=>`${i+1}. ${k.t}\t${TN[k.lv]}\t${att[i]}\t${fmt(tim[i])}\t${mm[i]}\t${best[i]==null?'-':best[i]}`)).join('\n');
+ const ok=()=>{b.textContent='Copied!';setTimeout(()=>b.textContent='Copy report',1500)};
+ try{navigator.clipboard.writeText(t).then(ok,()=>{b.textContent='Copy blocked'})}catch(_){b.textContent='Copy blocked'}}
+function cert(){confetti();modal(`<div class="cert"><h2>${pav} Certificate of Achievement</h2><p>This certifies that</p><p class="cn"><span id="cn">${esc(pname)||'your name here'}</span></p><p>${pyear?'('+esc(pyear)+') ':''}has completed all ${T.length} levels of Data Representation for IGCSE Computer Science (Edexcel 4CP0), from Beginner to Expert.</p><p>Total score: <b>${score}</b> points. Rank: <b>${rank()}</b></p>${tbl()}<p>${new Date().toLocaleDateString()}</p></div><p class="np"><input placeholder="Type your name" value="${esc(pname).replace(/"/g,'&quot;')}" oninput="pname=this.value;$('#cn').textContent=pname||'your name here';save();who()"></p><p class="np"><button class="btn" onclick="try{print()}catch(_){}">Print or save as PDF</button> <button class="btn alt" onclick="summary()">Progress report</button> <button class="btn alt" onclick="restart()">Play again</button> <button class="btn alt" onclick="closeM()">Close</button></p>`)}
+function tbl(){return `<div class="tw"><table class="st"><tr><th>Level</th><th>Tier</th><th>Best score</th></tr>`+T.map((k,i)=>`<tr><td>${i+1}. ${esc(k.t)}</td><td>${TN[k.lv]}</td><td>${best[i]!=null?best[i]+' pts':'not yet'}</td></tr>`).join('')+`</table></div>`}
+function clearProgress(){ti=0;score=0;unlocked=0;att=T.map(()=>0);mm=T.map(()=>0);best=T.map(()=>null);tim=T.map(()=>0);pon=T.map(()=>0)}
+function restart(){closeM();clearProgress();save();build()}
+// ================= PLAYER, RULES, SAVE CODE =================
+function who(){$('#who').textContent=pname?`${pav} ${pname}${pyear?', '+pyear:''}`:''}
+const AV=['🤖','🚀','🦊','🐉','🧠','⚡','🎮','🦄'],YR=['Year 9','Year 10','Year 11','Year 12','Year 13'],
+ FACTS=['A nibble is half a byte: 4 bits.','Programmers use hexadecimal because one hex digit is exactly 4 bits, so it is easy to convert.','1 KiB (kibibyte) is 1024 bytes, but 1 KB (kilobyte) is 1000 bytes.','In two\'s complement the left bit is worth −128, so 1000 0000 is −128.','Shifting left by 1 place doubles a number. Shifting right halves it.'];
+function welcome(){const saved=att.some(a=>a>0);
+ modal(`<h2>Data Representation</h2><p>Practise binary, hexadecimal, binary arithmetic, signed numbers, shifts and units of storage in ${T.length} levels, from Beginner to Expert, and earn your certificate.</p><p><button class="lnk" onclick="rules(true)">📖 Read the rules first</button></p><p>Pick your avatar:</p><div class="avs">${AV.map(a=>`<button class="av${a==pav?' on':''}" onclick="pav='${a}';welcome()">${a}</button>`).join('')}</div><p><input id="pn" placeholder="Your name" maxlength="40" value="${esc(pname).replace(/"/g,'&quot;')}" oninput="pname=this.value"><select id="py" onchange="pyear=this.value"><option value="">Year group</option>${YR.map(y=>`<option${y==pyear?' selected':''}>${y}</option>`).join('')}</select></p><p class="we" id="we"></p><p class="fact">Did you know? ${esc(FACTS[Math.floor(Math.random()*FACTS.length)])}</p><p><button class="btn" onclick="begin()">${saved?'Continue':'Start'}</button> <button class="btn alt" onclick="rules(true)">Rules</button>${saved?' <button class="btn alt" onclick="newPlayer()">New player (clears progress)</button>':''}</p>${dash()}`)}
+function begin(){pname=pname.trim();if(!pname||!pyear){$('#we').textContent='Please enter your name and choose a year group.';return}save();closeM();who();const f=$('#ans')||$('.bit');if(f)f.focus()}
+function isThis(){modal(`<h2>Welcome back!</h2><p style="font-size:2.4rem;margin:4px">${pav}</p><p>Is this still <b>${esc(pname)}</b>${pyear?' ('+esc(pyear)+')':''}?</p><button class="btn" onclick="welcome()">Yes, that’s me</button> <button class="btn alt" onclick="newPlayer()">No, I’m someone else</button><p class="fact">Choosing “No” clears the saved progress on this browser and starts a new player.</p>`)}
+function newPlayer(){pname='';pyear='';pav='🤖';clearProgress();save();build();welcome()}
+function rules(back){modal(`<h2>Rules and how to play</h2><p>Each Beginner and Intermediate level has 5 questions, and each Expert level has 10. The questions are new every time you play.</p><ul><li>Type your answer and press Check or Enter. For binary answers, click the bits to switch them between 0 and 1.</li><li>Hexadecimal answers can be in capitals or lower case. Long binary answers can be typed with or without spaces.</li><li>Correct: +10 points plus streak bonuses. Wrong: −3 points and a hint.</li><li>After two wrong tries on a question, the worked solution appears on the right. After every correct answer it shows the working too.</li><li>Finish a level with <b>${MAXM} mistakes or fewer</b> to unlock the next one. No mistakes earns +20 and 3 stars.</li><li>Your attempts, mistakes and time are saved in your progress report. Press Save progress to get a code for another device.</li><li>Finish all ${T.length} levels to earn your certificate.</li></ul><button class="btn" onclick="${back?'welcome()':'closeM()'}">${back?'Back':'Close'}</button>`)}
+function saveCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(data()))))}
+function saveDlg(){tick();save();modal(`<h2>Save your progress</h2><p>Your progress is saved automatically in this browser. To carry on from another device, copy this code and keep it safe.</p><textarea id="sc2" readonly rows="4" style="width:100%">${saveCode()}</textarea><p><button class="btn" onclick="cp()">Copy code</button></p><h3 style="margin:10px 0 4px">Load a saved code</h3><textarea id="lc" rows="3" style="width:100%" placeholder="Paste your code here"></textarea><p class="we" id="le"></p><p><button class="btn alt" onclick="loadCode()">Load progress</button> <button class="btn alt" onclick="closeM()">Close</button></p>`)}
+function cp(){const t=$('#sc2'),e=$('#le');t.select();const ok=()=>{e.style.color='var(--ok)';e.textContent='Code copied.'};try{navigator.clipboard.writeText(t.value).then(ok,()=>{try{document.execCommand('copy');ok()}catch(_){}})}catch(_){try{document.execCommand('copy');ok()}catch(__){}}}
+function loadCode(){const e=$('#le');e.style.color='var(--bad)';try{const d=JSON.parse(decodeURIComponent(escape(atob($('#lc').value.trim()))));
+ clearProgress();if(!apply(d))throw 0;save();t0=0;ti=Math.min(unlocked,T.length-1);build();welcome()}catch(_){e.textContent='That code did not work. Check that you copied all of it.'}}
+// ================= POP-UPS, CONFETTI, CLICKS AND KEYS =================
+function modal(h){pause();$('#m').innerHTML=`<div class="mc">${h}</div>`;$('#m').style.display='flex'}
+function closeM(){$('#m').style.display='none';resume()}
+function confetti(){for(let i=0;i<40;i++){const s=document.createElement('i');s.className='cf';s.style.cssText=`left:${Math.random()*100}vw;background:hsl(${Math.random()*360},80%,60%);animation-delay:${Math.random()*.4}s`;document.body.appendChild(s);setTimeout(()=>s.remove(),2600)}}
+$('#q').addEventListener('click',e=>{const t=e.target;let x;
+ if(x=t.closest('[data-bit]'))return setBit(+x.dataset.bit);
+ if(x=t.closest('[data-opt]'))return check(+x.dataset.opt);
+ if(t.closest('#clr')){bits.forEach((_,i)=>setBit(i,'0'));return}
+ if(t.closest('#chk'))return check()});
+$('#q').addEventListener('keydown',e=>{const x=e.target.closest('[data-bit]');
+ if(e.key=='Enter'){e.preventDefault();return check()}
+ if(!x)return;const i=+x.dataset.bit,mv=j=>{const n=$(`[data-bit="${j}"]`);if(n)n.focus()};
+ if(e.key=='0'||e.key=='1'){e.preventDefault();setBit(i,e.key);mv(i+1)}
+ else if(e.key=='ArrowRight'){e.preventDefault();mv(i+1)}else if(e.key=='ArrowLeft'){e.preventDefault();mv(i-1)}});
+$('#rs').onclick=()=>{if(!locked)score=startScore;build()};
+load();ti=Math.min(unlocked,T.length-1);build();if(pname)isThis();else welcome();
+</script></body></html>
